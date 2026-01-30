@@ -4,13 +4,14 @@ import google.generativeai as genai
 # --- CONFIGURASI BRANDING KREATIV.AI ---
 st.set_page_config(page_title="Kreativ.ai - Prompt Builder Pro", page_icon="🚀")
 
-# CSS untuk mempercantik tampilan
+# CSS untuk mempercantik tampilan (Perbaikan Parameter)
 st.markdown("""
     <style>
-    .main { background-color: #0e1117; }
-    .stButton>button { width: 100%; border-radius: 10px; height: 3em; background-color: #FF4B4B; color: white; }
+    .stApp { background-color: #0e1117; }
+    .stButton>button { width: 100%; border-radius: 10px; height: 3em; background-color: #FF4B4B; color: white; border: none; }
+    .stButton>button:hover { background-color: #ff3333; color: white; }
     </style>
-    """, unsafe_url_code=True)
+    """, unsafe_allow_html=True)
 
 st.title("🎨 Kreativ.ai Prompt Generator")
 st.write("Generate prompt infografis 3D kelas dunia hanya dalam hitungan detik.")
@@ -34,7 +35,6 @@ try:
             with st.spinner(f'Kreativ.ai sedang merancang arsitektur visual untuk {topik}...'):
                 
                 # --- LOGIKA SYSTEM PROMPT (TIRU KOMPETITOR) ---
-                # Menggunakan struktur JSON agar AI Gambar memberikan hasil presisi 
                 instruksi_rahasia = f"""
                 Anda adalah Professional Prompt Engineer untuk Kreativ.ai. 
                 Tugas: Buat editorial 3D infographic template untuk topik: '{topik}'.
@@ -79,8 +79,8 @@ try:
             st.warning("Silakan masukkan topik infografis Anda terlebih dahulu.")
 
 except Exception as e:
-    st.error(f"Terjadi kendala teknis. Pastikan API Key Anda aktif. Error: {e}")
+    st.error(f"Terjadi kendala teknis: {e}")
 
 # --- FOOTER ---
 st.markdown("---")
-st.caption("© 2026 Kreativ.ai | Solusi Digital Masa Depan | Powered by Gemini API")
+st.caption("© 2026 Kreativ.ai | Solusi Konten Masa Depan | Powered by Gemini API")

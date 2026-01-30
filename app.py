@@ -26,12 +26,12 @@ custom_wm = "Kreativ.ai"
 
 # --- 4. TAMPILAN UTAMA ---
 st.title("🎨 Kreativ.ai Prompt Generator")
-st.write("Generator Master Prompt Infografis 3D Kualitas Museum (High-End Editorial)")
+st.write("Generator Master Prompt 3D Kualitas Editorial & Sains (High-End)")
 
 if not is_member:
     if user_pwd: 
         st.sidebar.error("❌ Password Salah!")
-    st.info("💡 Silakan masukkan password akses di sidebar untuk mulai generate.")
+    st.info("💡 Silakan masukkan password akses di sidebar untuk mulai generate prompt spektakuler.")
     st.stop()
 
 # --- 5. LOGIKA PAKET MEMBER ---
@@ -42,64 +42,57 @@ else:
     st.success("✅ Akses Aktif: Paket HEMAT")
     st.info(f"💡 Watermark otomatis: **{custom_wm}**")
 
-# --- 6. MESIN GENERATOR (OPTIMASI KUALITAS & FIX 404) ---
+# --- 6. MESIN GENERATOR (ULTRA-DEEP JSON) ---
 try:
     API_KEY = st.secrets["GEMINI_API_KEY"]
     genai.configure(api_key=API_KEY)
     
-    # SOLUSI ERROR 404: Mencari model yang tersedia secara dinamis
-    model_name = 'gemini-1.5-flash' # Default
-    try:
-        # Cek apakah model flash tersedia, jika tidak pakai model pro
-        available_models = [m.name for m in genai.list_models() if 'generateContent' in m.supported_generation_methods]
-        if 'models/gemini-1.5-flash' in available_models:
-            model_name = 'gemini-1.5-flash'
-        elif 'models/gemini-1.5-pro' in available_models:
-            model_name = 'gemini-1.5-pro'
-        else:
-            model_name = available_models[0].replace('models/', '')
-    except:
+    # Deteksi model secara dinamis untuk menghindari 404
+    available_models = [m.name for m in genai.list_models() if 'generateContent' in m.supported_generation_methods]
+    model_name = 'gemini-1.5-flash'
+    if 'models/gemini-1.5-flash' in available_models:
         model_name = 'gemini-1.5-flash'
+    else:
+        model_name = available_models[0].replace('models/', '')
 
     model = genai.GenerativeModel(model_name)
 
-    topik = st.text_input("Apa topik infografis Anda?", placeholder="Contoh: Anatomi Jantung atau Daur Hidup Kupu-Kupu")
+    topik = st.text_input("Apa topik infografis Anda?", placeholder="Contoh: Daur Hidup Kupu-Kupu atau Anatomi Mesin")
 
     if st.button("Generate Master Prompt 🚀"):
         if topik:
-            with st.spinner('Merancang visual 8K dengan standar museum...'):
-                # INSTRUKSI "ULTRA-DETAIL" UNTUK MENYAMAI/MELEBIHI KOMPETITOR
+            with st.spinner('Merancang Master Prompt JSON super detail...'):
+                # INSTRUKSI UNTUK MENGHASILKAN STRUKTUR JSON YANG SANGAT DALAM
                 instruksi = f"""
-                You are a Professional Prompt Engineer. Generate an intricate 3D Infographic Master Prompt in JSON for: '{topik}'.
+                You are a Professional Prompt Engineer specialized in 3D Infographics. 
+                Generate an intricate, high-resolution 3D Infographic Master Prompt in JSON for the topic: '{topik}'.
                 
-                MUST FOLLOW THESE AESTHETIC RULES:
-                1. CONCEPT: A cross-section isometric 'Diorama Box' or 'Cutaway Box' viewed from a 45-degree angle.
-                2. VISUAL STYLE: Photorealistic miniature photography, handcrafted detailed modeling, museum diorama aesthetic.
-                3. TEXTURE: Use 'resin glossy finish', '3D embossed typography', and 'realistic organic materials like carved wood or glass'.
-                4. LIGHTING: Cinematic Chiaroscuro lighting, warm museum spotlights, and soft ambient occlusion shadows.
-                5. CAMERA: Tilt-shift macro lens effect, shallow depth of field (sharp focus on subject, blurred background).
+                The output JSON must be extremely deep and structured exactly like this:
+                - headline_text: (Title in Indonesian, caps)
+                - main_topic: (Detailed English explanation)
+                - visual_type: (e.g., biological infographic poster)
+                - design_style: (e.g., editorial modular design)
+                - main_visual_description: (A very detailed isometric 3D scene description with environment details)
+                - supporting_visuals: (Zoom-in modules, cross-sections, or macroscopic views)
+                - branding_watermark: "By {custom_wm}"
+                - callout_titles: (Min 4 technical points in Indonesian)
+                - data_elements: (Flow arrows, icons, scale indicators)
+                - style_references: (e.g., National Geographic, Scientific Journals)
+                - render_style: (Detail textures like chitin, silk, metal, wood grain)
+                - negative_prompt: (cartoon, low resolution, blurry, messy layout)
+                - aspect_ratio: "4:5"
                 
-                STRICT JSON STRUCTURE (Return ONLY the JSON block):
-                {{
-                  "role": "professional_prompt_engineer",
-                  "project_type": "editorial_3D_infographic_template",
-                  "headline_section": {{
-                    "text": "JUDUL DALAM BAHASA INDONESIA (Capslock)",
-                    "style": "3D EMBOSSED bold typography"
-                  }},
-                  "main_visual_concept": "A hyper-realistic isometric diorama box of {topik}. Intricate miniature details, 8K resolution, realistic paper/resin textures, and studio lighting with dramatic shadows.",
-                  "branding_footer": "By {custom_wm}",
-                  "negative_prompt": "cartoon, low quality, blurry, messy layout, flat 2D, distorted text, penulisan kode warna"
-                }}
+                Ensure the branding "By {custom_wm}" is strictly embedded in the footer/watermark section.
+                Return ONLY the JSON code block.
                 """
                 
                 response = model.generate_content(instruksi)
                 
-                st.markdown("### 💎 Hasil Generator (Kualitas Premium)")
+                st.markdown("### 💎 Hasil Generator (Standar Kompetitor)")
                 clean_json = response.text.replace("```json", "").replace("```", "").strip()
                 st.code(clean_json, language='json')
                 
-                st.info(f"✅ Salin kode di atas. Hasil visual akan menyertakan watermark: **By {custom_wm}**")
+                st.info(f"✅ Salin kode di atas. Master Prompt ini sudah dioptimasi untuk render 8K dengan watermark: **By {custom_wm}**")
                 st.balloons()
         else:
             st.warning("Masukkan topik terlebih dahulu.")

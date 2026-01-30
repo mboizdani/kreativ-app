@@ -61,13 +61,18 @@ else:
     st.success("🌟 **Akses Standar Aktif:** Mode Kreativ.ai Branding")
     st.info(f"💡 Watermark Otomatis: **{branding_name}**")
 
-# --- 6. CORE ENGINE (8K INFOGRAPHIC LOGIC - FIX LIMIT) ---
+# --- 6. CORE ENGINE (FIX ERROR 404 & DEEP LOGIC) ---
 try:
     API_KEY = st.secrets["GEMINI_API_KEY"]
     genai.configure(api_key=API_KEY)
     
-    # MENGGUNAKAN 1.5 FLASH UNTUK JATAH 1.500 GENERATE/HARI
-    model = genai.GenerativeModel('gemini-1.5-flash')
+    # PERBAIKAN PERMANEN ERROR 404: Mencari model yang tersedia secara dinamis
+    available_models = [m.name for m in genai.list_models() if 'generateContent' in m.supported_generation_methods]
+    # Mencari model flash di dalam daftar model yang tersedia
+    target_model = "gemini-1.5-flash"
+    found_model = next((m for m in available_models if target_model in m), available_models[0])
+    
+    model = genai.GenerativeModel(found_model)
 
     st.markdown("### 🧬 Konsep Infografis")
     topik = st.text_input("Apa materi yang ingin Anda buat infografisnya?", placeholder="Contoh: Anatomi Tokek, Daur Hidup Kupu-Kupu, dll.")
@@ -85,22 +90,15 @@ try:
                 4. WATERMARK: Strictly place a high-contrast digital watermark 'By {branding_name}' at the BOTTOM CENTER.
                 5. VISUAL STYLE: 3D Isometric, Museum Diorama, Cinematic Chiaroscuro lighting.
 
-                JSON Output Requirements (English structure, Indonesian content):
+                JSON Output (Indonesian Content):
                 {{
                   "role": "professional_visual_strategist",
-                  "headline": "JUDUL DALAM BAHASA INDONESIA (CAPSLOCK)",
-                  "branding_identity": {{
-                    "text": "By {branding_name}",
-                    "position": "Bottom Center (STRICT)",
-                    "style": "High-contrast digital text"
-                  }},
-                  "main_visual_anatomy": "Extremely detailed 3D diorama of {topik} with 8K macro textures...",
-                  "infographic_modules": [
-                    {{ "segment": "Bagian 1", "detail": "Penjelasan mendalam..." }},
-                    {{ "segment": "Bagian 2", "detail": "Penjelasan mendalam..." }}
-                  ],
-                  "render_settings": {{ "ratio": "2:3", "resolution": "8K", "lighting": "Museum spotlights" }},
-                  "negative_prompt": "cartoon, flat, messy layout, missing watermark, low resolution"
+                  "headline": "JUDUL DALAM BAHASA INDONESIA",
+                  "branding": "By {branding_name} at Bottom Center",
+                  "visual_description": "8K hyper-realistic isometric diorama box of {topik} with macro textures...",
+                  "infographic_elements": ["Technical points in Indonesian with 3D icons"],
+                  "render_settings": {{ "ratio": "2:3", "resolution": "8K" }},
+                  "negative_prompt": "cartoon, flat, messy, missing watermark, low resolution"
                 }}
                 """
                 
@@ -114,21 +112,18 @@ try:
                 st.markdown("---")
                 st.markdown("### ✅ Cara Pakai (Sangat Mudah):")
                 st.markdown(f"""
-                1. **Salin Kode:** Klik tombol salin pada kotak hitam di atas.
-                2. **Buka AI Gambar:** Sangat disarankan gunakan **ChatGPT** (Gratis/Pro). Bisa juga di Gemini.
+                1. **Salin Kode:** Klik ikon salin pada kotak hitam di atas.
+                2. **Buka AI Gambar:** Gunakan **ChatGPT** (Sangat Disarankan) atau **Gemini**.
                 3. **Tempel & Kirim:** Masukkan kode tadi ke kolom chat AI dan tekan Enter.
                 
-                *Note: Untuk tulisan yang paling rapi dan hasil paling mewah, gunakan **ChatGPT**.*
+                *Note: Hasil terbaik untuk tulisan rapi dan detail mewah ada di **ChatGPT Pro/Gratis**.*
                 """)
                 st.balloons()
         else:
             st.warning("Silakan isi topik terlebih dahulu.")
 
 except Exception as e:
-    if "429" in str(e):
-        st.error("⚠️ Server sedang sibuk (Limit Tercapai). Mohon tunggu sebentar lalu coba lagi.")
-    else:
-        st.error(f"Terjadi kendala teknis: {e}")
+    st.error(f"Terjadi kendala teknis: {e}")
 
 st.markdown("---")
 st.caption("© 2026 Kreativ.ai | Professional 8K Infographic Solution")

@@ -1,7 +1,7 @@
 import streamlit as st
 import google.generativeai as genai
 
-# --- 1. KONFIGURASI BRANDING ---
+# --- 1. KONFIGURASI HALAMAN ---
 st.set_page_config(page_title="Kreativ.ai Pro - Prompt Builder", page_icon="🚀")
 
 st.markdown("""
@@ -12,19 +12,9 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
-# --- 2. DATA PASSWORD & CONTOH (UPDATED QUALITY) ---
+# --- 2. DATA PASSWORD ---
 PWD_HEMAT = "HEMAT2026"
 PWD_PRO = "PROCUAN2026"
-
-# Contoh JSON Statis yang sudah di-upgrade kualitasnya
-TRIAL_ANATOMI = {
-    "role": "professional_prompt_engineer",
-    "headline": "ANATOMI MANUSIA: SISTEM INTERNAL",
-    "visual_concept": "Cross-section 3D Isometric Diorama Box",
-    "visual_description": "A hyper-realistic miniature photography style of a human torso inside a museum glass diorama. Featuring 3D embossed organs with realistic textures (muscles, bones, veins). Use shallow depth of field and dramatic studio spotlighting.",
-    "branding": "By Kreativ.ai",
-    "render_quality": "8K, Photorealistic, Cinematic Lighting"
-}
 
 # --- 3. SISTEM LOGIN SIDEBAR ---
 st.sidebar.title("🔑 Akses Member")
@@ -34,69 +24,77 @@ is_member = user_pwd in [PWD_HEMAT, PWD_PRO]
 is_pro = (user_pwd == PWD_PRO)
 custom_wm = "Kreativ.ai"
 
-# --- 4. TAMPILAN UTAMA & FREE TRIAL ---
+# --- 4. TAMPILAN UTAMA ---
 st.title("🎨 Kreativ.ai Prompt Generator")
-st.write("Generator Prompt Infografis 3D Kualitas Museum (8K Resolution)")
+st.write("Generator Master Prompt Infografis 3D Kualitas Museum (High-End Editorial)")
 
 if not is_member:
     if user_pwd: 
         st.sidebar.error("❌ Password Salah!")
-    
-    st.info("👋 **Mode Demo:** Coba kualitas Master Prompt kami secara gratis.")
-    choice = st.radio("Pilih Contoh Tema:", ["🦴 Anatomi Tubuh", "🦖 Anatomi Tokek (Gaya Kompetitor)"], horizontal=True)
-    
-    if "Anatomi Tubuh" in choice:
-        st.code(str(TRIAL_ANATOMI).replace("'", '"'), language='json')
-    else:
-        st.write("💡 *Klik tombol untuk melihat kualitas setara kompetitor.*")
-        if st.button("Lihat Prompt Gaya Kompetitor"):
-            st.code('{"role": "professional_prompt_engineer", "headline": "ANATOMI TOKEK: MASTER ADAPTASI", "visual_concept": "Gecko Natural Habitat Diorama Box", "style": "photorealistic miniature photography, museum diorama, tilt-shift macro lens", "branding": "By Kreativ.ai"}', language='json')
-
-    st.success("☝️ Salin kode ke Gemini (Nano Banana) atau ChatGPT!")
+    st.info("💡 Silakan masukkan password akses di sidebar untuk mulai generate prompt spektakuler.")
     st.stop()
 
-# --- 5. LOGIKA MEMBER PRO ---
+# --- 5. LOGIKA PAKET MEMBER ---
 if is_pro:
     st.success("✅ Akses Aktif: Paket PRO")
     custom_wm = st.text_input("Masukkan Nama Brand Anda:", placeholder="Contoh: Kreativ.ai")
 else:
     st.success("✅ Akses Aktif: Paket HEMAT")
-    st.info("💡 Watermark: **Kreativ.ai**")
+    st.info(f"💡 Watermark otomatis: **{custom_wm}**")
 
-# --- 6. MESIN GENERATOR (UPGRADED TO COMPETITOR QUALITY) ---
+# --- 6. MESIN GENERATOR (OPTIMASI KUALITAS KOMPETITOR) ---
 try:
+    # Mengambil API KEY secara aman dari Streamlit Secrets
     API_KEY = st.secrets["GEMINI_API_KEY"]
     genai.configure(api_key=API_KEY)
-    model = genai.GenerativeModel('gemini-1.5-flash')
+    
+    # Perbaikan Error 404: Menggunakan inisialisasi model yang lebih aman
+    model = genai.GenerativeModel('gemini-1.5-flash-latest')
 
-    topik = st.text_input("Apa topik infografis Anda?", placeholder="Contoh: Mekanisme Kerja Jantung")
+    topik = st.text_input("Apa topik infografis Anda?", placeholder="Contoh: Anatomi Jantung atau Cara Kerja Mesin")
 
     if st.button("Generate Master Prompt 🚀"):
         if topik:
-            with st.spinner('Sedang merancang instruksi visual kualitas tinggi...'):
-                # INSTRUKSI SUPER DETAIL AGAR HASIL SEPERTI KOMPETITOR
+            with st.spinner('Merancang visual 8K dengan standar editorial...'):
+                # INSTRUKSI "ULTRA-DETAIL" UNTUK MENYAMAI/MELEBIHI KOMPETITOR
                 instruksi = f"""
-                Create a professional editorial 3D infographic Master Prompt in JSON for: '{topik}'.
-                The prompt must force the AI to create:
-                1. A 'Museum Diorama Box' or 'Cutaway Box' structure.
-                2. 'Photorealistic miniature photography' style with 'tilt-shift macro lens' effect.
-                3. High-contrast 'Chiaroscuro lighting' with museum spotlights.
-                4. Textures must be described as: 'Handcrafted detailed modeling', 'Resin finish', '3D embossed typography'.
-                5. Add mandatory watermark text: 'By {custom_wm}' on the bottom right corner.
+                You are a Professional Prompt Engineer. Generate an intricate 3D Infographic Master Prompt in JSON for: '{topik}'.
+                The prompt MUST strictly follow these aesthetic rules to ensure high-end museum quality:
                 
-                Structure:
+                1. CONCEPT: A cross-section isometric 'Diorama Box' viewed from a 45-degree angle.
+                2. VISUAL STYLE: Photorealistic miniature photography, handcrafted detailed modeling, museum diorama aesthetic.
+                3. TEXTURE: Use 'resin glossy finish', 'carved textures', '3D embossed typography', and 'realistic organic materials'.
+                4. LIGHTING: Cinematic Chiaroscuro lighting, warm museum spotlights, and soft ambient occlusion shadows.
+                5. CAMERA: Tilt-shift macro lens effect, shallow depth of field (bokeh background).
+                
+                STRICT JSON STRUCTURE (Return ONLY the JSON block):
                 {{
                   "role": "professional_prompt_engineer",
-                  "headline": "JUDUL DALAM BAHASA INDONESIA",
-                  "main_visual": "Hyper-realistic isometric diorama box of {topik}. Intense detail, 8K, studio lighting.",
-                  "style_rules": ["museum diorama", "photorealistic miniature", "cinematic shadows"],
-                  "branding": "By {custom_wm}"
+                  "project_type": "editorial_3D_infographic_template",
+                  "headline_section": {{
+                    "text": "JUDUL DALAM BAHASA INDONESIA (Capslock)",
+                    "style": "3D EMBOSSED bold typography resembling carved signage"
+                  }},
+                  "main_visual": "A stunning, hyper-realistic isometric diorama box of {topik}. Intricate miniature details, 8K resolution, photorealistic paper and resin textures, studio lighting with dramatic shadows.",
+                  "branding_footer": "By {custom_wm}",
+                  "negative_prompt": "cartoon, low quality, blurry, messy layout, flat 2D, human hands, distorted text"
                 }}
-                Return ONLY JSON code.
                 """
+                
                 response = model.generate_content(instruksi)
-                st.markdown("### 💎 Hasil Generator (Kualitas Pro)")
-                st.code(response.text.replace("```json", "").replace("```", "").strip(), language='json')
+                
+                st.markdown("### 💎 Hasil Generator (Kualitas Premium)")
+                # Menampilkan hasil bersih tanpa markdown tambahan
+                clean_json = response.text.replace("```json", "").replace("```", "").strip()
+                st.code(clean_json, language='json')
+                
+                st.info(f"✅ Salin kode di atas. Hasil visual akan menyertakan watermark: **By {custom_wm}**")
                 st.balloons()
+        else:
+            st.warning("Masukkan topik terlebih dahulu.")
+
 except Exception as e:
-    st.error(f"Error: {e}")
+    st.error(f"Terjadi kendala: {e}")
+
+st.markdown("---")
+st.caption("© 2026 Kreativ.ai | Solusi Visual Masa Depan")

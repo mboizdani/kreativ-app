@@ -47,14 +47,22 @@ if is_pro:
 else:
     st.success("🌟 **Akses Standar Aktif**")
 
-# --- 6. CORE ENGINE (PENGUNCIAN MODEL 1.5 FLASH) ---
+# --- 6. CORE ENGINE (SMART MODEL SELECTOR) ---
 try:
     API_KEY = st.secrets["GEMINI_API_KEY"]
     genai.configure(api_key=API_KEY)
     
-    # KUNCI MATI KE VERSI 1.5 FLASH (JATAH 1.500/HARI)
-    # Jangan biarkan sistem memilih versi 2.5 yang limitnya cuma 20
-    model = genai.GenerativeModel('gemini-1.5-flash')
+    # MENCARI MODEL TERSEDIA SECARA DINAMIS (ANTI-404)
+    available_models = [m.name for m in genai.list_models() if 'generateContent' in m.supported_generation_methods]
+    
+    # Prioritas 1: gemini-1.5-flash (Jatah 1.500/hari)
+    # Prioritas 2: gemini-1.5-pro
+    # Prioritas 3: Model apa pun yang tersedia
+    selected_model = next((m for m in available_models if "1.5-flash" in m), 
+                          next((m for m in available_models if "1.5-pro" in m), 
+                          available_models[0]))
+    
+    model = genai.GenerativeModel(selected_model)
 
     topik = st.text_input("Materi apa yang ingin Anda buat?", placeholder="Contoh: Anatomi Tokek, Daur Hidup Katak, dll.")
 
@@ -62,7 +70,7 @@ try:
         if topik:
             with st.spinner('Merancang struktur infografis 8K...'):
                 instruksi = f"""
-                Act as a Professional Senior Visual Strategist. Generate an intricate 3D Infographic Master Prompt in JSON for: '{topik}'.
+                You are a Professional Senior Visual Strategist. Generate an intricate 3D Infographic Master Prompt in JSON for: '{topik}'.
                 STRICT RULES:
                 1. CONCEPT: Isometric 'Diorama Box' with extreme depth.
                 2. INFOGRAPHIC: Include headline, subheadline, and 3-4 data segments in Indonesian.
@@ -93,10 +101,7 @@ try:
             st.warning("Isi topik dulu ya.")
 
 except Exception as e:
-    if "429" in str(e):
-        st.error("⚠️ Batas percobaan gratis habis untuk saat ini. Mohon tunggu 1-2 menit lalu klik tombol lagi.")
-    else:
-        st.error(f"Kendala teknis: {e}")
+    st.error(f"Kendala teknis: {e}")
 
 st.markdown("---")
 st.caption("© 2026 Kreativ.ai | Professional 8K Infographic Solution")

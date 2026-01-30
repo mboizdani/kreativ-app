@@ -15,20 +15,28 @@ st.markdown("""
 PWD_HEMAT = "HEMAT2026"
 PWD_PRO = "PROCUAN2026"
 
+# --- 3. SISTEM LOGIN SIDEBAR ---
 st.sidebar.title("🔑 Akses Member")
 user_pwd = st.sidebar.text_input("Masukkan Password", type="password")
 
-if user_pwd not in [PWD_HEMAT, PWD_PRO]:
+# Logika Pesan Error jika Password Salah
+if user_pwd: # Jika user sudah mengetik sesuatu
+    if user_pwd not in [PWD_HEMAT, PWD_PRO]:
+        st.sidebar.error("❌ Password Salah! Silakan cek kembali email dari Lykn.id.")
+        st.title("🚀 Akses Terkunci")
+        st.warning("Maaf, password yang Anda masukkan tidak terdaftar.")
+        st.stop()
+else: # Jika kolom password masih kosong
     st.title("🚀 Selamat Datang di Kreativ.ai")
-    st.info("Silakan masukkan password akses dari Lykn.id untuk mengaktifkan tools.")
+    st.info("Silakan masukkan password akses Anda di menu samping (sidebar) untuk memulai.")
     st.stop()
 
-# --- 3. LOGIKA PAKET ---
+# --- 4. LOGIKA PAKET (Hanya jalan jika password benar) ---
 is_pro = (user_pwd == PWD_PRO)
 custom_wm = "Kreativ.ai"
 
 st.title("🎨 Kreativ.ai Prompt Generator")
-st.write("Ubah topik apa saja menjadi riset materi dan prompt gambar profesional.")
+st.success(f"Akses Aktif: {'Paket PRO (Custom Watermark)' if is_pro else 'Paket HEMAT (Watermark Tetap)'}")
 
 if is_pro:
     st.subheader("⚙️ Pengaturan Brand (Versi Pro)")
@@ -36,14 +44,13 @@ if is_pro:
 else:
     st.info("💡 Anda menggunakan Paket Hemat. Watermark tetap: **Kreativ.ai**")
 
-# --- 4. KONFIGURASI API (GANTI DENGAN KEY BARU) ---
-# Gunakan API Key baru yang Anda buat di Google AI Studio
+# --- 5. KONFIGURASI API (GANTI DENGAN KEY BARU) ---
 API_KEY = "AIzaSyDz8Uped3q9oGoN442MOHdfcIcco8KKpWw" 
 
 try:
     genai.configure(api_key=API_KEY)
     
-    # Deteksi model otomatis untuk mencegah error 404
+    # Deteksi model otomatis
     available_models = [m.name for m in genai.list_models() if 'generateContent' in m.supported_generation_methods]
     if available_models:
         model = genai.GenerativeModel(available_models[0])
@@ -56,7 +63,6 @@ try:
     if st.button("Proses Sekarang ✨"):
         if topik:
             with st.spinner('Kreativ.ai sedang merancang visual...'):
-                # Perbaikan instruksi agar tidak menyebabkan SyntaxError
                 instruksi = f"""
                 Tugas: Buat riset mendalam dan prompt gambar untuk topik: '{topik}'.
                 
@@ -65,21 +71,17 @@ try:
                 
                 Aturan Master Prompt Gambar:
                 - Konsep: Hyper-realistic 3D Isometric Diorama Box.
-                - Detail: Photorealistic textures, museum lighting, 8K render resolution.
+                - Detail: Photorealistic textures, museum lighting, 8K render.
                 - Branding: Wajib tertulis secara jelas 'By {custom_wm}' di pojok bawah gambar.
                 
                 Sajikan Master Prompt tersebut di dalam kotak kode (code block) agar mudah disalin.
                 """
                 
                 response = model.generate_content(instruksi)
-                
                 st.markdown("### 📊 Hasil Riset & Prompt")
                 st.write(response.text)
                 
-                st.info("✅ Langkah Selanjutnya:")
-                st.write("1. Salin 'Master Prompt' (teks bahasa Inggris) di atas.")
-                st.write("2. Buka Gemini (Mode Nano Banana/Pro).")
-                st.write("3. Tempel kodenya dan lihat hasilnya!")
+                st.info("✅ Langkah Selanjutnya: Salin Master Prompt di atas ke Gemini (Mode Nano Banana/Pro).")
         else:
             st.warning("Isi topiknya dulu ya.")
 

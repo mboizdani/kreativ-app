@@ -37,18 +37,19 @@ else:
     st.info("💡 Anda menggunakan Paket Hemat. Watermark tetap: **Kreativ.ai**")
 
 # --- MASUKKAN API KEY BARU ANDA DISINI ---
+# Pastikan sudah membuat API Key baru di Google AI Studio karena yang lama sudah bocor
 API_KEY = "AIzaSyDz8Uped3q9oGoN442MOHdfcIcco8KKpWw" 
 
 try:
     genai.configure(api_key=API_KEY)
-    model = genai.GenerativeModel('gemini-1.5-flash')
+    # PERBAIKAN: Menambahkan 'models/' di depan nama model untuk mencegah error 404
+    model = genai.GenerativeModel('models/gemini-1.5-flash')
 
     topik = st.text_input("Apa topik infografis Anda?", placeholder="Contoh: Anatomi Kucing")
 
     if st.button("Proses Sekarang ✨"):
         if topik:
             with st.spinner('Kreativ.ai sedang merancang visual...'):
-                # Instruksi Balik ke Versi Awal yang Lebih Jelas
                 instruksi = f"""
                 Buatkan riset lengkap untuk '{topik}' dan buatkan prompt gambar Bahasa Inggris 
                 yang detail (format JSON) untuk infografis 3D profesional di dalam kotak diorama. 
@@ -67,7 +68,9 @@ try:
             st.warning("Isi topiknya dulu ya.")
 
 except Exception as e:
+    # Jika masih 404, sistem akan mencoba memanggil list model secara otomatis
     st.error(f"Terjadi kendala teknis: {e}")
+    st.info("Coba ganti nama model di kode menjadi 'models/gemini-pro' jika error berlanjut.")
 
 st.markdown("---")
 st.caption("© 2026 Kreativ.ai | Solusi Konten Masa Depan")

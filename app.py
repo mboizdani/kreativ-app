@@ -8,9 +8,9 @@ st.write("Ubah topik apa saja menjadi prompt infografis profesional.")
 
 # --- BAGIAN PENTING: TEMPEL API KEY ANDA DI SINI ---
 # Ganti teks di dalam tanda kutip dengan kode yang Anda copy dari Google AI Studio tadi
-API_KEY = "TEMPEL_KODE_AIza_ANDA_DI_SINI"
+API_KEY = "AIzaSyA9cbVtTFvvpc_AUUsGA1VNCKcoIffiUKc"
 
-if API_KEY != "TEMPEL_KODE_AIza_ANDA_DI_SINI":
+if API_KEY != "AIzaSyA9cbVtTFvvpc_AUUsGA1VNCKcoIffiUKc":
     genai.configure(api_key=API_KEY)
     model = genai.GenerativeModel('gemini-1.5-flash')
 

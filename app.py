@@ -1,46 +1,38 @@
 import streamlit as st
 import google.generativeai as genai
 
-# Konfigurasi Tampilan Kreativ.ai
+# Konfigurasi Tampilan
 st.set_page_config(page_title="Kreativ.ai - Prompt Builder", page_icon="🚀")
 st.title("🎨 Kreativ.ai Prompt Generator")
 st.write("Ubah topik apa saja menjadi prompt infografis profesional.")
 
-# API KEY Anda (Sudah benar)
+# API KEY Anda
 API_KEY = "AIzaSyA9cbVtTFvvpc_AUUsGA1VNCKcoIffiUKc"
 
-# Inisialisasi AI dengan model terbaru yang paling stabil
-genai.configure(api_key=API_KEY)
-model = genai.GenerativeModel('gemini-1.5-flash-latest')
+try:
+    genai.configure(api_key=API_KEY)
+    
+    # MENCARI MODEL OTOMATIS (Solusi Anti-Error 404)
+    available_models = [m.name for m in genai.list_models() if 'generateContent' in m.supported_generation_methods]
+    # Pilih model pertama yang tersedia (biasanya gemini-pro atau gemini-1.5-flash)
+    model_name = available_models[0] if available_models else 'gemini-pro'
+    model = genai.GenerativeModel(model_name)
 
-topik = st.text_input("Apa topik infografis Anda?", placeholder="Contoh: Tips Sukses Trading Crypto")
+    topik = st.text_input("Apa topik infografis Anda?", placeholder="Contoh: Manfaat Hidup Sehat")
 
-if st.button("Proses Sekarang ✨"):
-    if topik:
-        with st.spinner('Kreativ.ai sedang meriset data...'):
-            try:
-                # Instruksi Strategis
-                instruksi = (
-                    f"Tolong buatkan riset mendalam untuk topik: {topik}. "
-                    "Berikan Judul, 5 poin materi utama, dan buatkan prompt gambar "
-                    "bahasa Inggris yang sangat detail untuk infografis 3D profesional."
-                )
-                
-                # Memproses permintaan
+    if st.button("Proses Sekarang ✨"):
+        if topik:
+            with st.spinner(f'Kreativ.ai menggunakan {model_name}...'):
+                instruksi = f"Riset topik '{topik}' secara mendalam. Berikan Judul, 5 poin materi, dan Master Prompt bahasa Inggris untuk gambar Infografis 3D profesional."
                 response = model.generate_content(instruksi)
-                
-                if response.text:
-                    st.markdown("### 📊 Hasil Riset & Prompt")
-                    st.code(response.text)
-                    st.info("Salin teks di atas ke Gemini untuk membuat gambar!")
-                else:
-                    st.error("AI tidak memberikan respon. Coba ganti topik.")
-                    
-            except Exception as e:
-                st.error(f"Terjadi kendala teknis: {e}")
-                st.info("Saran: Coba klik 'Reboot App' di menu kanan bawah Streamlit.")
-    else:
-        st.warning("Silakan isi topiknya dulu ya.")
+                st.markdown("### 📊 Hasil Riset & Prompt")
+                st.code(response.text)
+                st.info("Salin teks di atas ke Gemini untuk jadi gambar!")
+        else:
+            st.warning("Isi topiknya dulu ya.")
+
+except Exception as e:
+    st.error(f"Koneksi API bermasalah. Pastikan API Key benar. Error: {e}")
 
 st.markdown("---")
 st.caption("© 2026 Kreativ.ai | Solusi Konten Masa Depan")

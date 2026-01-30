@@ -47,22 +47,26 @@ if is_pro:
 else:
     st.success("🌟 **Akses Standar Aktif**")
 
-# --- 6. CORE ENGINE (SMART MODEL SELECTOR) ---
+# --- 6. CORE ENGINE (PENGUNCIAN MODEL 1.5 FLASH) ---
 try:
     API_KEY = st.secrets["GEMINI_API_KEY"]
     genai.configure(api_key=API_KEY)
     
-    # MENCARI MODEL TERSEDIA SECARA DINAMIS (ANTI-404)
+    # STRATEGI PENGUNCIAN: Mencari model 1.5-flash dan MENGABAIKAN 2.5
     available_models = [m.name for m in genai.list_models() if 'generateContent' in m.supported_generation_methods]
     
-    # Prioritas 1: gemini-1.5-flash (Jatah 1.500/hari)
-    # Prioritas 2: gemini-1.5-pro
-    # Prioritas 3: Model apa pun yang tersedia
-    selected_model = next((m for m in available_models if "1.5-flash" in m), 
-                          next((m for m in available_models if "1.5-pro" in m), 
-                          available_models[0]))
+    # Cari yang ada tulisan '1.5-flash', abaikan yang ada '2.5'
+    target_model = None
+    for m in available_models:
+        if "1.5-flash" in m and "2.5" not in m:
+            target_model = m
+            break
     
-    model = genai.GenerativeModel(selected_model)
+    # Jika tidak ketemu spesifik, gunakan fallback manual ke 1.5 flash
+    if not target_model:
+        target_model = "models/gemini-1.5-flash"
+    
+    model = genai.GenerativeModel(target_model)
 
     topik = st.text_input("Materi apa yang ingin Anda buat?", placeholder="Contoh: Anatomi Tokek, Daur Hidup Katak, dll.")
 
@@ -70,7 +74,7 @@ try:
         if topik:
             with st.spinner('Merancang struktur infografis 8K...'):
                 instruksi = f"""
-                You are a Professional Senior Visual Strategist. Generate an intricate 3D Infographic Master Prompt in JSON for: '{topik}'.
+                Act as a Professional Senior Visual Strategist. Generate an intricate 3D Infographic Master Prompt in JSON for: '{topik}'.
                 STRICT RULES:
                 1. CONCEPT: Isometric 'Diorama Box' with extreme depth.
                 2. INFOGRAPHIC: Include headline, subheadline, and 3-4 data segments in Indonesian.
@@ -101,7 +105,10 @@ try:
             st.warning("Isi topik dulu ya.")
 
 except Exception as e:
-    st.error(f"Kendala teknis: {e}")
+    if "429" in str(e):
+        st.error("⚠️ Kuota harian model 2.5 habis. Namun sistem sudah kami alihkan ke model 1.5 (Jatah 1.500/hari). Silakan KLIK LAGI tombol Generate di atas.")
+    else:
+        st.error(f"Kendala teknis: {e}")
 
 st.markdown("---")
 st.caption("© 2026 Kreativ.ai | Professional 8K Infographic Solution")

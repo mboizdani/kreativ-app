@@ -1,7 +1,7 @@
 import streamlit as st
 import google.generativeai as genai
 
-# --- 1. KONFIGURASI BRANDING ---
+# --- 1. KONFIGURASI HALAMAN ---
 st.set_page_config(page_title="Kreativ.ai Pro - Prompt Builder", page_icon="🚀")
 
 st.markdown("""
@@ -21,30 +21,27 @@ user_pwd = st.sidebar.text_input("Masukkan Password", type="password")
 
 if user_pwd:
     if user_pwd not in [PWD_HEMAT, PWD_PRO]:
-        st.sidebar.error("❌ Password Salah! Silakan cek kembali email dari Lykn.id.")
+        st.sidebar.error("❌ Password Salah! Cek email dari Lykn.id.")
         st.stop()
 else:
     st.title("🚀 Selamat Datang di Kreativ.ai")
-    st.info("Silakan masukkan password akses Anda di menu samping untuk memulai.")
+    st.info("Masukkan password akses Anda di sidebar untuk memulai.")
     st.stop()
 
 # --- 4. LOGIKA PAKET & WATERMARK ---
 is_pro = (user_pwd == PWD_PRO)
-# Default watermark untuk demo/pembeli hemat adalah Kreativ.ai
 custom_wm = "Kreativ.ai"
 
 st.title("🎨 Kreativ.ai Prompt Generator")
 
 if is_pro:
     st.success("✅ Akses Aktif: Paket PRO (Custom Watermark)")
-    # Placeholder diubah agar anonim (tidak menyebut nama pribadi)
-    custom_wm = st.text_input("Masukkan Nama Brand Anda:", placeholder="Contoh: StudioVisual.ai")
+    custom_wm = st.text_input("Masukkan Nama Brand Anda:", placeholder="Contoh: DigitalArt.id")
 else:
     st.success("✅ Akses Aktif: Paket HEMAT (Watermark Kreativ.ai)")
     st.info("💡 Watermark otomatis: **Kreativ.ai**")
 
 # --- 5. KONFIGURASI API ---
-# Gunakan API Key baru yang Anda buat di Google AI Studio
 API_KEY = "AIzaSyDz8Uped3q9oGoN442MOHdfcIcco8KKpWw" 
 
 try:
@@ -55,43 +52,55 @@ try:
     if available_models:
         model = genai.GenerativeModel(available_models[0])
     else:
-        st.error("Model tidak ditemukan. Cek API Key Anda.")
+        st.error("API Key bermasalah atau model tidak ditemukan.")
         st.stop()
 
-    topik = st.text_input("Apa topik infografis Anda?", placeholder="Contoh: Anatomi Tubuh Manusia")
+    topik = st.text_input("Apa topik infografis Anda?", placeholder="Contoh: Klasifikasi Hewan")
 
     if st.button("Proses Sekarang ✨"):
         if topik:
-            with st.spinner('Kreativ.ai sedang merancang visual super powerful...'):
-                # INSTRUKSI VERSI POWERFUL (Struktur Lebih Detail & Teknis)
+            with st.spinner('Kreativ.ai sedang merancang visual modular...'):
+                # INSTRUKSI VERSI OPTIMASI TEKS & WATERMARK TETAP
                 instruksi = f"""
-                You are a Professional Prompt Engineer. Generate a HIGH-DETAIL 3D Infographic JSON for the topic: '{topik}'.
+                You are a Professional Prompt Engineer. Generate a Modular 3D Infographic JSON for: '{topik}'.
                 
-                STRICT RULES:
-                1. Return ONLY raw JSON code. No conversational text.
-                2. Structure must include: infographic_title, infographic_description, output_settings (8K, Indonesian, Isometric Diorama Box, Studio Lighting), and 'branding'.
-                3. Branding details: watermark_text must be 'By {custom_wm}', position: 'Bottom Right'.
-                4. Diorama_box_properties: include dimensions_hint and material_hint (minimalistic, transparent layers).
-                5. Content: Create 5-6 detailed sections/systems relevant to '{topik}' with visual_representation (color_palette, highlight_color) and 4 key_details each.
-                6. Visual style must be hyper-realistic, museum-quality diorama.
+                STRICT JSON STRUCTURE (Return ONLY JSON):
+                {{
+                  "headline_text": "JUDUL DALAM BAHASA INDONESIA",
+                  "main_topic": "detailed visual of {topik}",
+                  "visual_type": "educational infographic poster",
+                  "design_style": "editorial modular design",
+                  "main_visual_description": "A central 3D isometric scene showing {topik}. Use high-quality textures and studio lighting.",
+                  "supporting_visuals": "3 smaller 3D isometric floating modules below the main scene zooming in on specific details.",
+                  "callout_titles": ["Detail 1", "Detail 2", "Detail 3"],
+                  "render_quality": "ultra high resolution, clear readable text, no blurry parts",
+                  "ui_style": "flat vector UI elements with clean lines overlaying 3D models for readability",
+                  "branding": {{
+                    "watermark_text": "By {custom_wm}",
+                    "watermark_position": "Bottom Right corner, distinct from the artwork",
+                    "style": "Professional subtle typography"
+                  }},
+                  "negative_prompt": "blurry text, small unreadable labels, messy layout, cartoon"
+                }}
+                
+                Content must be in Indonesian. Visual descriptions in English.
                 """
                 
                 response = model.generate_content(instruksi)
                 
                 st.markdown("### 📊 Master Prompt JSON")
-                # Pembersihan output agar siap tempel
                 clean_json = response.text.replace("```json", "").replace("```", "").strip()
                 st.code(clean_json, language='json')
                 
                 st.info("✅ Langkah Selanjutnya:")
-                st.write("1. Salin semua kode di atas.")
-                st.write("2. Tempel ke AI pembuat gambar favorit Anda (Gemini Nano Banana Pro, ChatGPT Plus, atau DALL-E 3).")
-                st.write(f"3. Hasil gambar akan otomatis memiliki watermark: **By {custom_wm}**")
+                st.write("1. Salin kode di atas.")
+                st.write("2. Tempel ke Gemini (Nano Banana) atau ChatGPT.")
+                st.write(f"3. Watermark **'By {custom_wm}'** akan berada di pojok bawah.")
         else:
-            st.warning("Isi topiknya dulu ya.")
+            st.warning("Isi topiknya dulu.")
 
 except Exception as e:
-    st.error(f"Terjadi kendala teknis: {e}")
+    st.error(f"Terjadi kendala: {e}")
 
 st.markdown("---")
 st.caption("© 2026 Kreativ.ai | Lisensi Member Premium")

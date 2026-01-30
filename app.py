@@ -31,7 +31,7 @@ st.write("Generator Master Prompt Infografis 3D Kualitas Museum (High-End Editor
 if not is_member:
     if user_pwd: 
         st.sidebar.error("❌ Password Salah!")
-    st.info("💡 Silakan masukkan password akses di sidebar untuk mulai generate prompt spektakuler.")
+    st.info("💡 Silakan masukkan password akses di sidebar untuk mulai generate.")
     st.stop()
 
 # --- 5. LOGIKA PAKET MEMBER ---
@@ -42,30 +42,42 @@ else:
     st.success("✅ Akses Aktif: Paket HEMAT")
     st.info(f"💡 Watermark otomatis: **{custom_wm}**")
 
-# --- 6. MESIN GENERATOR (OPTIMASI KUALITAS KOMPETITOR) ---
+# --- 6. MESIN GENERATOR (OPTIMASI KUALITAS & FIX 404) ---
 try:
-    # Mengambil API KEY secara aman dari Streamlit Secrets
     API_KEY = st.secrets["GEMINI_API_KEY"]
     genai.configure(api_key=API_KEY)
     
-    # Perbaikan Error 404: Menggunakan inisialisasi model yang lebih aman
-    model = genai.GenerativeModel('gemini-1.5-flash-latest')
+    # SOLUSI ERROR 404: Mencari model yang tersedia secara dinamis
+    model_name = 'gemini-1.5-flash' # Default
+    try:
+        # Cek apakah model flash tersedia, jika tidak pakai model pro
+        available_models = [m.name for m in genai.list_models() if 'generateContent' in m.supported_generation_methods]
+        if 'models/gemini-1.5-flash' in available_models:
+            model_name = 'gemini-1.5-flash'
+        elif 'models/gemini-1.5-pro' in available_models:
+            model_name = 'gemini-1.5-pro'
+        else:
+            model_name = available_models[0].replace('models/', '')
+    except:
+        model_name = 'gemini-1.5-flash'
 
-    topik = st.text_input("Apa topik infografis Anda?", placeholder="Contoh: Anatomi Jantung atau Cara Kerja Mesin")
+    model = genai.GenerativeModel(model_name)
+
+    topik = st.text_input("Apa topik infografis Anda?", placeholder="Contoh: Anatomi Jantung atau Daur Hidup Kupu-Kupu")
 
     if st.button("Generate Master Prompt 🚀"):
         if topik:
-            with st.spinner('Merancang visual 8K dengan standar editorial...'):
+            with st.spinner('Merancang visual 8K dengan standar museum...'):
                 # INSTRUKSI "ULTRA-DETAIL" UNTUK MENYAMAI/MELEBIHI KOMPETITOR
                 instruksi = f"""
                 You are a Professional Prompt Engineer. Generate an intricate 3D Infographic Master Prompt in JSON for: '{topik}'.
-                The prompt MUST strictly follow these aesthetic rules to ensure high-end museum quality:
                 
-                1. CONCEPT: A cross-section isometric 'Diorama Box' viewed from a 45-degree angle.
+                MUST FOLLOW THESE AESTHETIC RULES:
+                1. CONCEPT: A cross-section isometric 'Diorama Box' or 'Cutaway Box' viewed from a 45-degree angle.
                 2. VISUAL STYLE: Photorealistic miniature photography, handcrafted detailed modeling, museum diorama aesthetic.
-                3. TEXTURE: Use 'resin glossy finish', 'carved textures', '3D embossed typography', and 'realistic organic materials'.
+                3. TEXTURE: Use 'resin glossy finish', '3D embossed typography', and 'realistic organic materials like carved wood or glass'.
                 4. LIGHTING: Cinematic Chiaroscuro lighting, warm museum spotlights, and soft ambient occlusion shadows.
-                5. CAMERA: Tilt-shift macro lens effect, shallow depth of field (bokeh background).
+                5. CAMERA: Tilt-shift macro lens effect, shallow depth of field (sharp focus on subject, blurred background).
                 
                 STRICT JSON STRUCTURE (Return ONLY the JSON block):
                 {{
@@ -73,18 +85,17 @@ try:
                   "project_type": "editorial_3D_infographic_template",
                   "headline_section": {{
                     "text": "JUDUL DALAM BAHASA INDONESIA (Capslock)",
-                    "style": "3D EMBOSSED bold typography resembling carved signage"
+                    "style": "3D EMBOSSED bold typography"
                   }},
-                  "main_visual": "A stunning, hyper-realistic isometric diorama box of {topik}. Intricate miniature details, 8K resolution, photorealistic paper and resin textures, studio lighting with dramatic shadows.",
+                  "main_visual_concept": "A hyper-realistic isometric diorama box of {topik}. Intricate miniature details, 8K resolution, realistic paper/resin textures, and studio lighting with dramatic shadows.",
                   "branding_footer": "By {custom_wm}",
-                  "negative_prompt": "cartoon, low quality, blurry, messy layout, flat 2D, human hands, distorted text"
+                  "negative_prompt": "cartoon, low quality, blurry, messy layout, flat 2D, distorted text, penulisan kode warna"
                 }}
                 """
                 
                 response = model.generate_content(instruksi)
                 
                 st.markdown("### 💎 Hasil Generator (Kualitas Premium)")
-                # Menampilkan hasil bersih tanpa markdown tambahan
                 clean_json = response.text.replace("```json", "").replace("```", "").strip()
                 st.code(clean_json, language='json')
                 

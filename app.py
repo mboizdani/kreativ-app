@@ -44,8 +44,9 @@ if user_pwd == PWD_PRO:
 else:
     st.success("🌟 **Akses Standar Aktif**")
 
-# --- 6. CORE ENGINE (SIMPLE STABLE MODE) ---
+# --- 6. CORE ENGINE (VERSI STABIL V1) ---
 try:
+    # Memanggil API KEY dari Secrets
     API_KEY = st.secrets["GEMINI_API_KEY"]
     genai.configure(api_key=API_KEY)
     
@@ -54,11 +55,20 @@ try:
     if st.button("Generate Master Prompt Sekarang ⚡"):
         if topik:
             with st.spinner('Merancang struktur infografis 8K...'):
-                instruksi = f"Generate 3D Infographic Master Prompt JSON for: '{topik}'. Rule: 8K, Isometric, 2:3 ratio, Indonesian labels, Watermark 'By {branding_name}' at bottom center. Return ONLY JSON."
+                # INSTRUKSI MENDALAM SETARA KOMPETITOR
+                instruksi = f"""
+                Act as a Professional Senior Visual Strategist. Generate a complex 3D Infographic Master Prompt in JSON for: '{topik}'.
+                STRICT RULES:
+                1. CONCEPT: Isometric 'Diorama Box' with extreme depth.
+                2. INFOGRAPHIC: Include headline, subheadline, and 3-4 technical segments in Indonesian.
+                3. QUALITY: 8K, macro textures, photorealistic museum style.
+                4. ASPECT RATIO: Strictly '2:3'.
+                5. WATERMARK: Bold text 'By {branding_name}' at the BOTTOM CENTER.
+                Return ONLY JSON.
+                """
                 
-                # CARA PEMANGGILAN PALING STABIL
                 try:
-                    # Mencoba model paling ringan (Flash)
+                    # MENGGUNAKAN NAMA MODEL PALING STANDAR (TANPA AWALAN MODELS/)
                     model = genai.GenerativeModel('gemini-1.5-flash')
                     response = model.generate_content(instruksi)
                     
@@ -68,14 +78,18 @@ try:
                     
                     st.markdown("---")
                     st.markdown("### ✅ Cara Pakai (Sangat Mudah):")
-                    st.markdown("1. **Salin Kode** di atas.\n2. **Tempel ke ChatGPT** (Disarankan) atau Gemini.\n3. **Kirim** dan lihat hasilnya!")
+                    st.markdown("1. **Salin Kode** di atas.\n2. **Tempel ke ChatGPT** (Sangat Disarankan).\n3. **Kirim** dan lihat hasilnya!")
                     st.balloons()
                 except Exception as e_inner:
-                    st.error(f"⚠️ Server Google sedang padat. Silakan klik tombol sekali lagi. ({e_inner})")
+                    # JIKA MASIH 404, PAKAI FALLBACK KE MODEL PRO
+                    model_alt = genai.GenerativeModel('gemini-1.5-pro')
+                    response_alt = model_alt.generate_content(instruksi)
+                    st.code(response_alt.text.replace("```json", "").replace("```", "").strip(), language='json')
+                    st.balloons()
         else:
             st.warning("Isi topik dulu ya.")
 except Exception as e:
-    st.error(f"Kendala teknis: {e}")
+    st.error(f"Kendala teknis (Coba ganti API Key atau cek koneksi): {e}")
 
 st.markdown("---")
 st.caption("© 2026 Kreativ.ai | Professional 8K Infographic Solution")

@@ -1,8 +1,8 @@
 import streamlit as st
 import google.generativeai as genai
 
-# --- 1. KONFIGURASI VISUAL PREMIUM & LAYOUT ---
-st.set_page_config(page_title="Kreativ.ai - The Ultimate 3D Infographic Engine", page_icon="🎨", layout="wide")
+# --- 1. KONFIGURASI VISUAL & BRANDING ---
+st.set_page_config(page_title="Prompt Generator Infografis Pro", page_icon="🎨", layout="wide")
 
 st.markdown("""
     <style>
@@ -28,41 +28,39 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
-# --- 2. DATA PASSWORD AKSES ---
+# --- 2. AKSES KEAMANAN ---
 PWD_HEMAT = "HEMAT2026"
 PWD_PRO = "PROCUAN2026"
 
-# --- 3. SIDEBAR: MEMBER PORTAL ---
+# --- 3. SIDEBAR: LOGIN ---
 st.sidebar.markdown("### 🏛️ Member Portal")
-user_pwd = st.sidebar.text_input("Access Key", type="password", placeholder="Enter your key...")
+user_pwd = st.sidebar.text_input("Access Key", type="password", placeholder="Masukkan kunci akses...")
 
 is_member = user_pwd in [PWD_HEMAT, PWD_PRO]
 is_pro = (user_pwd == PWD_PRO)
-# Default branding tetap Kreativ.ai
-custom_wm = "Kreativ.ai"
+branding_name = "Kreativ.ai"
 
-# --- 4. DASHBOARD UTAMA ---
-st.title("🚀 Kreativ.ai: 3D Visualization Engine")
-st.markdown("#### *The Future of 8K High-Definition Educational Infographics*")
+# --- 4. TAMPILAN UTAMA ---
+st.title("🚀 Prompt Generator Infografis Pro")
+st.markdown("#### *Ubah Ide Menjadi Infografis 3D Mewah Kualitas 8K*")
 st.markdown("---")
 
 if not is_member:
     if user_pwd: 
-        st.sidebar.error("❌ Invalid Access Key!")
-    st.info("🔓 **Sistem Terkunci.** Masukkan *Access Key* di sidebar untuk mengaktifkan mesin generator infografis.")
+        st.sidebar.error("❌ Kunci Akses Salah!")
+    st.info("🔓 **Sistem Terkunci.** Silakan masukkan *Access Key* di samping untuk mulai membuat infografis.")
     st.stop()
 
-# --- 5. PANEL KONTROL MEMBER ---
+# --- 5. PANEL KONTROL ---
 if is_pro:
-    st.success("💎 **Akses Premium Aktif:** Mode Custom Branding Aktif")
-    custom_wm = st.text_input("Ganti Watermark Brand Anda:", placeholder="Contoh: Kreativ.ai")
-    if not custom_wm:
-        custom_wm = "Kreativ.ai"
+    st.success("💎 **Akses Premium:** Mode Custom Branding")
+    branding_name = st.text_input("Ganti Watermark Brand Anda:", placeholder="Contoh: Kreativ.ai")
+    if not branding_name:
+        branding_name = "Kreativ.ai"
 else:
-    st.success("🌟 **Akses Standar Aktif:** Mode Kreativ.ai Branding")
-    st.info(f"💡 Watermark Otomatis: **{custom_wm}**")
+    st.success("🌟 **Akses Standar:** Mode Kreativ.ai Branding")
 
-# --- 6. CORE ENGINE (8K INFOGRAPHIC DEPTH LOGIC) ---
+# --- 6. MESIN GENERATOR (DEEP INFOGRAPHIC LOGIC) ---
 try:
     API_KEY = st.secrets["GEMINI_API_KEY"]
     genai.configure(api_key=API_KEY)
@@ -77,37 +75,31 @@ try:
     model = genai.GenerativeModel(model_name)
 
     st.markdown("### 🧬 Konsep Infografis")
-    topik = st.text_input("Apa yang ingin Anda visualisasikan hari ini?", placeholder="Contoh: Anatomi Burung Hantu, Mekanisme Mesin Turbo, dll.")
+    topik = st.text_input("Apa yang ingin Anda buat infografisnya?", placeholder="Contoh: Daur Hidup Kupu-Kupu, Anatomi Tokek, dll.")
 
-    if st.button("Generate Master Prompt Sekarang ⚡"):
+    if st.button("Generate Master Prompt ⚡"):
         if topik:
-            with st.spinner('Merancang struktur infografis 8K Ultra-HD...'):
-                # INSTRUKSI FINAL: FOKUS FUNGSI INFOGRAFIS + KUALITAS ZOOM + WATERMARK TENGAH
+            with st.spinner('Merancang struktur infografis 8K...'):
+                # INSTRUKSI FINAL: RASIO 2:3 & KUALITAS KOMPETITOR
                 instruksi = f"""
-                You are a Professional Senior Visual Strategist. Generate an intricate 3D Infographic Master Prompt in JSON for: '{topik}'.
+                You are a Professional Prompt Engineer. Generate an intricate 3D Infographic Master Prompt in JSON for: '{topik}'.
                 
-                STRICT DESIGN RULES FOR UNBEATABLE QUALITY:
-                1. INFOGRAPHIC FUNCTION: This is NOT just an aesthetic image. It must be a functional infographic with a central 'Diorama Box' subject surrounded by multiple floating data modules, icons, and technical labels in Indonesian.
-                2. ZOOM QUALITY (8K): Force 'ultra-detailed macro textures' (microscopic detail on surfaces like paper, skin, or metal) to ensure the image remains sharp when zoomed.
-                3. WATERMARK CONSISTENCY: Strictly place a clean, bold digital watermark 'By {custom_wm}' at the BOTTOM CENTER. It must be high-contrast and stand alone, not blending with the 3D objects.
-                4. VISUAL STYLE: 3D Isometric, Museum Diorama, Cinematic Chiaroscuro lighting, photorealistic 8K render.
-
-                JSON Output Requirements (English structure, Indonesian content):
+                STRICT PARAMETERS:
+                1. ASPECT RATIO: Strictly "2:3" (High-resolution vertical poster).
+                2. CONCEPT: Cross-section isometric 'Diorama Box' with extreme depth.
+                3. INFOGRAPHIC: Include headline, subheadline, 3 data sections with icons, and impact section in Indonesian.
+                4. QUALITY: 8K resolution, photorealistic miniature photography, macro textures.
+                5. BRANDING: Place high-contrast text 'By {branding_name}' at the BOTTOM CENTER.
+                
+                OUTPUT ONLY JSON:
                 {{
-                  "role": "professional_visual_strategist",
-                  "headline": "JUDUL DALAM BAHASA INDONESIA (CAPSLOCK)",
-                  "branding_identity": {{
-                    "text": "By {custom_wm}",
-                    "position": "Bottom Center (STRICT)",
-                    "style": "High-contrast digital text"
-                  }},
-                  "main_visual_anatomy": "Extremely detailed description of the {topik} diorama including 8K macro textures...",
-                  "infographic_modules": [
-                    {{ "segment": "Bagian 1", "detail": "Penjelasan mendalam..." }},
-                    {{ "segment": "Bagian 2", "detail": "Penjelasan mendalam..." }}
-                  ],
-                  "render_settings": {{ "resolution": "8K Ultra-HD", "lighting": "Museum spotlights", "texture_depth": "Macro level" }},
-                  "negative_prompt": "blurry, low resolution, messy layout, missing watermark, cartoon, 2D"
+                  "role": "professional_prompt_engineer",
+                  "headline": "JUDUL DALAM BAHASA INDONESIA",
+                  "branding": "By {branding_name} (Bottom Center)",
+                  "visual_description": "Hyper-realistic isometric diorama box of {topik}. 8K, macro textures, studio lighting.",
+                  "data_sections": ["Minimum 3 technical points in Indonesian"],
+                  "render_settings": {{ "ratio": "2:3", "resolution": "8K" }},
+                  "negative_prompt": "cartoon, low res, blurry, flat, missing watermark"
                 }}
                 """
                 
@@ -117,34 +109,22 @@ try:
                 clean_json = response.text.replace("```json", "").replace("```", "").strip()
                 st.code(clean_json, language='json')
                 
-                # --- 7. PANDUAN LANGKAH SELANJUTNYA (SESUAI KESEPAKATAN) ---
+                # --- 7. INSTRUKSI SIMPEL UNTUK PENGGUNA ---
                 st.markdown("---")
-                st.markdown("### ✅ Langkah Selanjutnya (Instruksi Penggunaan):")
-                col1, col2 = st.columns(2)
-                with col1:
-                    st.markdown("""
-                    **1. Salin Kode JSON**
-                    Klik ikon salin di pojok kanan atas kotak hitam di atas. Kode ini sudah dioptimasi untuk render visual 8K.
-                    
-                    **2. Pilih Platform AI Anda**
-                    * **ChatGPT Pro/Plus (Sangat Disarankan):** Hasil paling realistis, teks paling rapi, dan layout paling fungsional.
-                    * **ChatGPT Gratis:** Tetap bisa digunakan, namun kualitas visual mungkin standar.
-                    * **Gemini (Mode Pro/Nano Banana):** Hasil visual spektakuler dan cepat, namun terkadang teks butuh penyesuaian.
-                    """)
-                with col2:
-                    st.markdown(f"""
-                    **3. Tempel & Generate**
-                    Tempel kode JSON tersebut ke kolom chat AI pilihan Anda.
-                    
-                    **4. Tips Hasil Maksimal**
-                    Jika watermark **By {custom_wm}** di tengah bawah belum muncul sempurna, cukup ketik: *"Add the branding text from the JSON at the bottom center"*.
-                    """)
+                st.markdown("### ✅ Cara Pakai (Simpel):")
+                st.markdown(f"""
+                1. **Salin Kode:** Klik ikon salin pada kotak hitam di atas.
+                2. **Buka AI Gambar:** Gunakan **ChatGPT** (Sangat Disarankan karena hasil lebih rapi) atau **Gemini**.
+                3. **Tempel & Kirim:** Masukkan kode tadi ke chat AI Anda.
+                
+                *Tips: Meskipun bisa di versi gratis, hasil di **ChatGPT Plus/Pro** adalah yang terbaik untuk tulisan yang rapi.*
+                """)
                 st.balloons()
         else:
             st.warning("Silakan isi topik terlebih dahulu.")
 
 except Exception as e:
-    st.error(f"Koneksi API terganggu. Mohon coba lagi. Error: {e}")
+    st.error(f"Terjadi kendala teknis. Pastikan API Key benar. Error: {e}")
 
 st.markdown("---")
-st.caption("© 2026 Kreativ.ai | Professional 8K Infographic Solution")
+st.caption("© 2026 Kreativ.ai | Solusi Infografis Pro 8K")

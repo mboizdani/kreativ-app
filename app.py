@@ -17,7 +17,7 @@ PWD_PRO = "PROCUAN2026"
 
 # --- 3. SISTEM LOGIN SIDEBAR ---
 st.sidebar.title("🔑 Akses Member")
-user_pwd = st.sidebar.text_input("Masukkan Password", type="password")
+user_pwd = st.sidebar.text_input("Masukkan Password Akses", type="password")
 
 if user_pwd:
     if user_pwd not in [PWD_HEMAT, PWD_PRO]:
@@ -25,7 +25,7 @@ if user_pwd:
         st.stop()
 else:
     st.title("🚀 Selamat Datang di Kreativ.ai")
-    st.info("Masukkan password akses Anda di sidebar untuk memulai.")
+    st.info("Silakan masukkan password akses Anda di sidebar untuk memulai.")
     st.stop()
 
 # --- 4. LOGIKA PAKET & WATERMARK ---
@@ -36,13 +36,13 @@ st.title("🎨 Kreativ.ai Prompt Generator")
 
 if is_pro:
     st.success("✅ Akses Aktif: Paket PRO (Custom Watermark)")
-    custom_wm = st.text_input("Masukkan Nama Brand Anda:", placeholder="Contoh: DigitalArt.id")
+    # UPDATE: Placeholder menggunakan nama brand Anda agar melekat di pengguna
+    custom_wm = st.text_input("Masukkan Nama Brand Anda:", placeholder="Contoh: Kreativ.ai atau NamaBrandAnda")
 else:
     st.success("✅ Akses Aktif: Paket HEMAT (Watermark Kreativ.ai)")
     st.info("💡 Watermark otomatis: **Kreativ.ai**")
 
 # --- 5. KONFIGURASI API ---
-# Gunakan API Key baru yang belum bocor
 API_KEY = "AIzaSyDz8Uped3q9oGoN442MOHdfcIcco8KKpWw" 
 
 try:
@@ -54,11 +54,9 @@ try:
 
     if st.button("Proses Sekarang ✨"):
         if topik:
-            with st.spinner('Kreativ.ai sedang merancang visual modular...'):
-                # INSTRUKSI DIPERTANGGUH UNTUK MEMAKSA WATERMARK DI CHATGPT & GEMINI
+            with st.spinner('Kreativ.ai sedang merancang visual...'):
                 instruksi = f"""
                 You are a Professional Prompt Engineer. Generate a Modular 3D Infographic JSON for: '{topik}'.
-                
                 STRICT JSON STRUCTURE (Return ONLY JSON):
                 {{
                   "headline_text": "JUDUL DALAM BAHASA INDONESIA",
@@ -71,12 +69,11 @@ try:
                   "branding_requirement": {{
                     "mandatory_watermark": "By {custom_wm}",
                     "position": "Bottom Right corner",
-                    "instruction": "Strictly render the text 'By {custom_wm}' as a clear, readable digital watermark on the final image. Do not ignore this text."
+                    "instruction": "Strictly render the text 'By {custom_wm}' as a clear, readable digital watermark on the bottom right corner."
                   }},
                   "negative_prompt": "blurry text, messy layout, missing watermark, cartoonish"
                 }}
-                
-                Content: Indonesian. Visual Descriptions: English. Ensure the watermark text is included in the image generation process.
+                Content: Indonesian. Visual Descriptions: English.
                 """
                 
                 response = model.generate_content(instruksi)
@@ -86,9 +83,9 @@ try:
                 st.code(clean_json, language='json')
                 
                 st.info("✅ Langkah Selanjutnya:")
-                st.write(f"1. Salin kode di atas. Hasil akan menyertakan watermark: **By {custom_wm}**")
-                st.write("2. Tempel ke ChatGPT (DALL-E 3) atau Gemini (Nano Banana).")
-                st.write("3. Jika di ChatGPT watermark belum muncul, ketik: 'Add the branding text from the JSON to the bottom right corner'.")
+                st.write(f"1. Salin kode di atas.")
+                st.write("2. Tempel ke **Gemini** atau **ChatGPT Pro** untuk hasil terbaik. Jika tidak punya Pro, bisa gunakan **ChatGPT Gratis**.")
+                st.write(f"3. Hasil gambar akan otomatis menyertakan watermark: **By {custom_wm}**")
         else:
             st.warning("Isi topiknya dulu.")
 
@@ -96,4 +93,4 @@ except Exception as e:
     st.error(f"Terjadi kendala: {e}")
 
 st.markdown("---")
-st.caption("© 2026 Kreativ.ai | Lisensi Member Premium")
+st.caption("© 2026 Kreativ.ai | Solusi Konten Masa Depan")

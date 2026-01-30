@@ -11,86 +11,91 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
-# --- 2. PENGATURAN PASSWORD ---
+# --- 2. PENGATURAN PASSWORD & DATA ---
 PWD_HEMAT = "HEMAT2026"
 PWD_PRO = "PROCUAN2026"
 
+# Contoh JSON Statis untuk Free Trial
+TRIAL_ANATOMI = {
+    "headline_text": "ANATOMI TUBUH MANUSIA: SISTEM INTERNAL",
+    "main_topic": "Detailed 3D human anatomy overview",
+    "main_visual_description": "A stunning 3D isometric diorama of a human torso in a glass box. Showing skeletal, muscular, and circulatory systems with glowing accents.",
+    "branding": "By Kreativ.ai",
+    "note": "Ini adalah contoh kualitas 8K Kreativ.ai. Beli Paket Pro untuk topik kustom & brand sendiri!"
+}
+
+TRIAL_LAUT = {
+    "headline_text": "EKOSISTEM LAUT: KEHIDUPAN TERUMBU KARANG",
+    "main_topic": "Deep sea ecosystem 3D visualization",
+    "main_visual_description": "Vibrant 3D underwater diorama with coral reefs, sharks, and schools of fish. Realistic water caustic lighting and 8K textures.",
+    "branding": "By Kreativ.ai",
+    "note": "Kualitas visual spektakuler! Ingin buat topik lain? Cek paket hemat/pro kami."
+}
+
 # --- 3. SISTEM LOGIN SIDEBAR ---
 st.sidebar.title("🔑 Akses Member")
-user_pwd = st.sidebar.text_input("Masukkan Password Akses", type="password")
+user_pwd = st.sidebar.text_input("Masukkan Password untuk Akses Penuh", type="password")
 
-if user_pwd:
-    if user_pwd not in [PWD_HEMAT, PWD_PRO]:
-        st.sidebar.error("❌ Password Salah! Cek email dari Lykn.id.")
-        st.stop()
-else:
-    st.title("🚀 Selamat Datang di Kreativ.ai")
-    st.info("Silakan masukkan password akses Anda di sidebar untuk memulai.")
-    st.stop()
-
-# --- 4. LOGIKA PAKET & WATERMARK ---
+is_member = user_pwd in [PWD_HEMAT, PWD_PRO]
 is_pro = (user_pwd == PWD_PRO)
 custom_wm = "Kreativ.ai"
 
+# --- 4. TAMPILAN UTAMA ---
 st.title("🎨 Kreativ.ai Prompt Generator")
+st.write("Ubah ide menjadi infografis 3D kelas dunia.")
 
+if not is_member:
+    st.info("👋 **Selamat Datang!** Silakan coba kualitas kami secara gratis di bawah ini.")
+    
+    col1, col2 = st.columns(2)
+    with col1:
+        if st.button("🎁 Coba Gratis: Anatomi"):
+            st.markdown("### 📊 Master Prompt (Anatomi)")
+            st.code(str(TRIAL_ANATOMI), language='json')
+            st.success("☝️ Salin kode di atas ke Gemini atau ChatGPT!")
+            
+    with col2:
+        if st.button("🎁 Coba Gratis: Laut"):
+            st.markdown("### 📊 Master Prompt (Laut)")
+            st.code(str(TRIAL_LAUT), language='json')
+            st.success("☝️ Salin kode di atas ke Gemini atau ChatGPT!")
+
+    st.markdown("---")
+    st.warning("🔒 **Fitur Topik Kustom Terkunci.** Silakan masukkan password di sidebar atau beli akses di Lykn.id untuk membuat topik apa pun dengan brand Anda sendiri.")
+    st.stop()
+
+# --- 5. LOGIKA MEMBER (Hanya muncul jika password benar) ---
 if is_pro:
-    st.success("✅ Akses Aktif: Paket PRO (Custom Watermark)")
-    # UPDATE: Placeholder menggunakan nama brand Anda agar melekat di pengguna
-    custom_wm = st.text_input("Masukkan Nama Brand Anda:", placeholder="Contoh: Kreativ.ai atau NamaBrandAnda")
+    st.success("✅ Akses Aktif: Paket PRO")
+    custom_wm = st.text_input("Masukkan Nama Brand Anda:", placeholder="Contoh: Kreativ.ai")
 else:
-    st.success("✅ Akses Aktif: Paket HEMAT (Watermark Kreativ.ai)")
+    st.success("✅ Akses Aktif: Paket HEMAT")
     st.info("💡 Watermark otomatis: **Kreativ.ai**")
 
-# --- 5. KONFIGURASI API ---
-API_KEY = "AIzaSyDz8Uped3q9oGoN442MOHdfcIcco8KKpWw" 
+# --- 6. KONFIGURASI API ---
+API_KEY = "TEMPEL_API_KEY_BARU_DI_SINI" 
 
 try:
     genai.configure(api_key=API_KEY)
-    available_models = [m.name for m in genai.list_models() if 'generateContent' in m.supported_generation_methods]
-    model = genai.GenerativeModel(available_models[0])
+    model = genai.GenerativeModel('gemini-1.5-flash')
 
-    topik = st.text_input("Apa topik infografis Anda?", placeholder="Contoh: Ekosistem Laut")
+    topik = st.text_input("Apa topik kustom Anda?", placeholder="Contoh: Cara Kerja Mesin Roket")
 
-    if st.button("Proses Sekarang ✨"):
+    if st.button("Generate Prompt Kustom ✨"):
         if topik:
-            with st.spinner('Kreativ.ai sedang merancang visual...'):
-                instruksi = f"""
-                You are a Professional Prompt Engineer. Generate a Modular 3D Infographic JSON for: '{topik}'.
-                STRICT JSON STRUCTURE (Return ONLY JSON):
-                {{
-                  "headline_text": "JUDUL DALAM BAHASA INDONESIA",
-                  "main_topic": "highly detailed visual of {topik}",
-                  "visual_type": "educational infographic poster",
-                  "design_style": "editorial modular design",
-                  "main_visual_description": "A stunning central 3D isometric scene of {topik}. Ultra-realistic textures, 8K resolution, and studio lighting.",
-                  "supporting_visuals": "3 floating 3D modules below the main scene with clear educational callouts.",
-                  "render_quality": "Masterpiece quality, photorealistic, sharp focus on all text elements",
-                  "branding_requirement": {{
-                    "mandatory_watermark": "By {custom_wm}",
-                    "position": "Bottom Right corner",
-                    "instruction": "Strictly render the text 'By {custom_wm}' as a clear, readable digital watermark on the bottom right corner."
-                  }},
-                  "negative_prompt": "blurry text, messy layout, missing watermark, cartoonish"
-                }}
-                Content: Indonesian. Visual Descriptions: English.
-                """
-                
+            with st.spinner('Merancang visual eksklusif Anda...'):
+                instruksi = f"Generate 3D Infographic JSON for: '{topik}' with branding 'By {custom_wm}'. Use modular 3D isometric style, 8K, photorealistic. Return ONLY JSON."
                 response = model.generate_content(instruksi)
                 
-                st.markdown("### 📊 Master Prompt JSON")
+                st.markdown("### 💎 Hasil Eksklusif Anda")
                 clean_json = response.text.replace("```json", "").replace("```", "").strip()
                 st.code(clean_json, language='json')
-                
-                st.info("✅ Langkah Selanjutnya:")
-                st.write(f"1. Salin kode di atas.")
-                st.write("2. Tempel ke **Gemini** atau **ChatGPT Pro** untuk hasil terbaik. Jika tidak punya Pro, bisa gunakan **ChatGPT Gratis**.")
-                st.write(f"3. Hasil gambar akan otomatis menyertakan watermark: **By {custom_wm}**")
+                st.balloons()
         else:
-            st.warning("Isi topiknya dulu.")
+            st.warning("Masukkan topik dulu ya.")
 
 except Exception as e:
-    st.error(f"Terjadi kendala: {e}")
+    st.error(f"Kendala teknis: {e}")
 
 st.markdown("---")
 st.caption("© 2026 Kreativ.ai | Solusi Konten Masa Depan")

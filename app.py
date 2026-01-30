@@ -27,7 +27,7 @@ if user_pwd != PWD_PRO:
 
 # --- 3. DASHBOARD ---
 st.title("🚀 Prompt Generator Infografis Pro")
-st.markdown("#### *The Ultimate Editorial 3D Engine (Competitor Level)*")
+st.markdown("#### *The Ultimate Editorial 3D Engine*")
 
 # --- 4. INPUT ---
 col1, col2 = st.columns(2)
@@ -138,7 +138,7 @@ try:
                 model = genai.GenerativeModel(target_model)
                 response = model.generate_content(instruksi)
                 
-                st.markdown("### 💎 Master Prompt (Struktur Kompetitor)")
+                st.markdown("### 💎 Master Prompt")
                 st.code(response.text.replace("```json", "").replace("```", "").strip(), language='json')
                 
                 st.markdown("---")

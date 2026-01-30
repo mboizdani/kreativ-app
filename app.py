@@ -1,7 +1,7 @@
 import streamlit as st
 import google.generativeai as genai
 
-# --- 1. CONFIGURASI BRANDING ---
+# --- 1. KONFIGURASI BRANDING ---
 st.set_page_config(page_title="Kreativ.ai Pro - Prompt Builder", page_icon="🚀")
 
 st.markdown("""
@@ -21,75 +21,77 @@ user_pwd = st.sidebar.text_input("Masukkan Password", type="password")
 
 if user_pwd:
     if user_pwd not in [PWD_HEMAT, PWD_PRO]:
-        st.sidebar.error("❌ Password Salah!")
+        st.sidebar.error("❌ Password Salah! Silakan cek kembali email dari Lykn.id.")
         st.stop()
 else:
     st.title("🚀 Selamat Datang di Kreativ.ai")
-    st.info("Masukkan password akses Anda di sidebar untuk memulai.")
+    st.info("Silakan masukkan password akses Anda di menu samping untuk memulai.")
     st.stop()
 
-# --- 4. LOGIKA PAKET ---
+# --- 4. LOGIKA PAKET & WATERMARK ---
 is_pro = (user_pwd == PWD_PRO)
-# Jika hemat, watermark dikosongkan. Jika pro, bisa diisi.
-branding_text = "" 
+# Default watermark untuk demo/pembeli hemat adalah Kreativ.ai
+custom_wm = "Kreativ.ai"
 
 st.title("🎨 Kreativ.ai Prompt Generator")
 
 if is_pro:
     st.success("✅ Akses Aktif: Paket PRO (Custom Watermark)")
-    branding_text = st.text_input("Masukkan Nama Brand/Watermark:", placeholder="Contoh: By RobiBarik")
+    # Placeholder diubah agar anonim (tidak menyebut nama pribadi)
+    custom_wm = st.text_input("Masukkan Nama Brand Anda:", placeholder="Contoh: StudioVisual.ai")
 else:
-    st.success("✅ Akses Aktif: Paket HEMAT (Tanpa Watermark)")
-    branding_text = "" # Kosong untuk paket hemat
+    st.success("✅ Akses Aktif: Paket HEMAT (Watermark Kreativ.ai)")
+    st.info("💡 Watermark otomatis: **Kreativ.ai**")
 
-# --- 5. KONFIGURASI API (PASTIKAN PAKAI KEY BARU) ---
+# --- 5. KONFIGURASI API ---
+# Gunakan API Key baru yang Anda buat di Google AI Studio
 API_KEY = "AIzaSyDz8Uped3q9oGoN442MOHdfcIcco8KKpWw" 
 
 try:
     genai.configure(api_key=API_KEY)
+    
+    # Deteksi model otomatis
     available_models = [m.name for m in genai.list_models() if 'generateContent' in m.supported_generation_methods]
-    model = genai.GenerativeModel(available_models[0])
+    if available_models:
+        model = genai.GenerativeModel(available_models[0])
+    else:
+        st.error("Model tidak ditemukan. Cek API Key Anda.")
+        st.stop()
 
-    topik = st.text_input("Apa topik infografis Anda?", placeholder="Contoh: Reproduksi Hewan")
+    topik = st.text_input("Apa topik infografis Anda?", placeholder="Contoh: Anatomi Tubuh Manusia")
 
     if st.button("Proses Sekarang ✨"):
         if topik:
-            with st.spinner('Sedang men-generate kode prompt...'):
-                # INSTRUKSI SUPER KETAT: Hanya boleh JSON, tidak boleh mengobrol!
+            with st.spinner('Kreativ.ai sedang merancang visual super powerful...'):
+                # INSTRUKSI VERSI POWERFUL (Struktur Lebih Detail & Teknis)
                 instruksi = f"""
-                You are a Professional Prompt Engineer. 
-                Task: Generate a HIGH-DETAIL 3D Infographic JSON for the topic: '{topik}'.
+                You are a Professional Prompt Engineer. Generate a HIGH-DETAIL 3D Infographic JSON for the topic: '{topik}'.
                 
                 STRICT RULES:
-                1. Return ONLY the raw JSON code. No conversational filler, no 'Sure', no 'Here is your code'.
-                2. Use the following JSON structure exactly:
-                {{
-                  "role": "professional_prompt_engineer",
-                  "project_type": "editorial_3D_infographic_template",
-                  "output_settings": {{ "output_format": "high-resolution vertical infographic poster", "aspect_ratio": "2:3", "resolution": "8K", "language": "Indonesian" }},
-                  "headline_section": {{ "headline_text": "JUDUL DALAM BAHASA INDONESIA", "headline_style": "3D EMBOSSED bold typography" }},
-                  "data_sections": [ {{ "title": "Poin 1", "description": "Penjelasan detail" }}, "...sampai 5 poin" ],
-                  "main_visual_section": {{ "visual_concept": "3D Isometric Diorama Box", "visual_description": "Hyper-realistic description of {topik} inside a box" }},
-                  "design_details": {{ "branding": "Wajib sertakan teks '{branding_text}' di pojok bawah" }},
-                  "negative_prompt": "flat, cartoon, lowres"
-                }}
-                3. Language for content: Indonesian. 
-                4. Language for visual_description: English.
+                1. Return ONLY raw JSON code. No conversational text.
+                2. Structure must include: infographic_title, infographic_description, output_settings (8K, Indonesian, Isometric Diorama Box, Studio Lighting), and 'branding'.
+                3. Branding details: watermark_text must be 'By {custom_wm}', position: 'Bottom Right'.
+                4. Diorama_box_properties: include dimensions_hint and material_hint (minimalistic, transparent layers).
+                5. Content: Create 5-6 detailed sections/systems relevant to '{topik}' with visual_representation (color_palette, highlight_color) and 4 key_details each.
+                6. Visual style must be hyper-realistic, museum-quality diorama.
                 """
                 
                 response = model.generate_content(instruksi)
                 
                 st.markdown("### 📊 Master Prompt JSON")
-                # Membersihkan teks jika AI masih bandel kasih kata-kata pembuka
+                # Pembersihan output agar siap tempel
                 clean_json = response.text.replace("```json", "").replace("```", "").strip()
                 st.code(clean_json, language='json')
                 
-                st.info("✅ Salin semua kode di atas dan tempel langsung ke Gemini Nano Banana Pro.")
+                st.info("✅ Langkah Selanjutnya:")
+                st.write("1. Salin semua kode di atas.")
+                st.write("2. Tempel ke AI pembuat gambar favorit Anda (Gemini Nano Banana Pro, ChatGPT Plus, atau DALL-E 3).")
+                st.write(f"3. Hasil gambar akan otomatis memiliki watermark: **By {custom_wm}**")
         else:
-            st.warning("Isi topiknya dulu.")
+            st.warning("Isi topiknya dulu ya.")
 
 except Exception as e:
-    st.error(f"Terjadi kendala: {e}")
+    st.error(f"Terjadi kendala teknis: {e}")
 
 st.markdown("---")
 st.caption("© 2026 Kreativ.ai | Lisensi Member Premium")

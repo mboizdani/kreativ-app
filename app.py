@@ -1,7 +1,7 @@
 import streamlit as st
 import google.generativeai as genai
 
-# --- 1. KONFIGURASI BRANDING ---
+# --- 1. KONFIGURASI HALAMAN ---
 st.set_page_config(page_title="Kreativ.ai Pro - Prompt Builder", page_icon="🚀")
 
 st.markdown("""
@@ -16,27 +16,19 @@ st.markdown("""
 PWD_HEMAT = "HEMAT2026"
 PWD_PRO = "PROCUAN2026"
 
-# Contoh JSON Statis (Tampilan Lebar & Mewah)
+# JSON Statis Premium (Setara Kompetitor)
 TRIAL_ANATOMI = {
     "headline_text": "ANATOMI TUBUH MANUSIA: SISTEM INTERNAL",
-    "main_topic": "Detailed 3D human anatomy overview",
-    "visual_type": "educational biological infographic poster",
-    "design_style": "editorial modular design",
-    "main_visual_description": "A stunning central 3D isometric scene of a human torso in a glass box. High-quality textures showing skeletal and muscular systems.",
+    "visual_description": "A hyper-realistic 3D isometric diorama box. Inside the cutaway box is a detailed model of the human torso. High-quality textures for skeletal and muscular systems. Museum spotlighting, 8K resolution.",
     "branding": "By Kreativ.ai",
-    "render_quality": "8K resolution, photorealistic",
-    "note": "Akses fitur kustom & brand sendiri dengan Paket Pro!"
+    "note": "Beli Paket Pro untuk topik kustom & brand sendiri!"
 }
 
 TRIAL_LAUT = {
     "headline_text": "EKOSISTEM LAUT: TERUMBU KARANG 3D",
-    "main_topic": "Deep sea ecosystem 3D visualization",
-    "visual_type": "educational nature infographic",
-    "design_style": "editorial modular design",
-    "main_visual_description": "Vibrant 3D underwater diorama with coral reefs, sharks, and schools of fish. Realistic water caustic lighting.",
+    "visual_description": "A vibrant 3D underwater diorama box. Featuring coral reefs, sharks, and marine life with realistic water caustic lighting. Detailed miniature photography style, 8K render.",
     "branding": "By Kreativ.ai",
-    "render_quality": "8K resolution, photorealistic",
-    "note": "Dapatkan visual spektakuler lainnya di Paket Hemat/Pro!"
+    "note": "Akses fitur kustom tanpa batas di Paket Hemat/Pro!"
 }
 
 # --- 3. SISTEM LOGIN SIDEBAR ---
@@ -57,7 +49,6 @@ if not is_member:
     
     st.info("👋 **Selamat Datang!** Silakan coba kualitas Master Prompt kami secara gratis di bawah ini.")
     
-    # Navigasi Radio (Pilihan Tema Gratis)
     choice = st.radio("Pilih Tema Master Prompt Gratis:", ["🦴 Anatomi Tubuh", "🌊 Ekosistem Laut"], horizontal=True)
     
     if choice == "🦴 Anatomi Tubuh":
@@ -68,12 +59,12 @@ if not is_member:
         st.markdown("### 📊 Master Prompt (Laut)")
         st.code(str(TRIAL_LAUT).replace("'", '"'), language='json')
 
-    st.success("☝️ Salin seluruh kode di atas ke Gemini atau ChatGPT!")
+    st.success("☝️ Salin kode di atas ke Gemini (Mode Nano Banana) atau ChatGPT Pro/Gratis!")
     st.markdown("---")
     st.warning("🔒 **Fitur Topik Kustom Terkunci.** Masukkan password di sidebar atau beli akses di Lykn.id untuk membuat topik kustom dengan brand Anda sendiri.")
     st.stop()
 
-# --- 5. LOGIKA PAKET MEMBER (Hanya muncul jika login berhasil) ---
+# --- 5. LOGIKA PAKET MEMBER ---
 if is_pro:
     st.success("✅ Akses Aktif: Paket PRO (Custom Watermark)")
     custom_wm = st.text_input("Masukkan Nama Brand Anda:", placeholder="Contoh: Kreativ.ai")
@@ -83,7 +74,7 @@ else:
 
 # --- 6. KONFIGURASI API (MENGGUNAKAN SECRETS) ---
 try:
-    # Mengambil API KEY secara aman dari Streamlit Secrets
+    # Mengambil API KEY secara aman dari Streamlit Secrets (Anti-Leaked)
     API_KEY = st.secrets["GEMINI_API_KEY"]
     genai.configure(api_key=API_KEY)
     
@@ -95,26 +86,26 @@ try:
 
     if st.button("Proses Sekarang ✨"):
         if topik:
-            with st.spinner('Kreativ.ai sedang merancang visual modular...'):
+            with st.spinner('Kreativ.ai sedang merancang visual modular setara kualitas Pro...'):
                 instruksi = f"""
-                You are a Professional Prompt Engineer. Generate a Modular 3D Infographic JSON for: '{topik}'.
-                STRICT JSON STRUCTURE (Return ONLY JSON):
+                You are a Professional Prompt Engineer. Generate a Master 3D Infographic JSON for: '{topik}'.
+                
+                STRICT STRUCTURE (Return ONLY JSON):
                 {{
                   "headline_text": "JUDUL DALAM BAHASA INDONESIA",
-                  "main_topic": "highly detailed visual of {topik}",
-                  "visual_type": "educational infographic poster",
-                  "design_style": "editorial modular design",
-                  "main_visual_description": "A stunning central 3D isometric scene of {topik}. Ultra-realistic textures, 8K resolution, and studio lighting.",
-                  "supporting_visuals": "3 floating 3D modules below the main scene with clear educational callouts.",
-                  "render_quality": "Masterpiece quality, photorealistic, sharp focus on all text elements",
+                  "main_visual_section": {{
+                    "visual_concept": "3D Isometric Diorama Box",
+                    "visual_description": "Hyper-realistic miniature photography style. A cutaway box showing {topik} with extreme detail, photorealistic textures, museum spotlighting, and shallow depth of field.",
+                    "visual_style": ["photorealistic", "museum diorama", "tilt-shift macro", "8K render"]
+                  }},
+                  "data_sections": ["Detailed biological/technical points in Indonesian"],
                   "branding_requirement": {{
                     "mandatory_watermark": "By {custom_wm}",
                     "position": "Bottom Right corner",
-                    "instruction": "Strictly render the text 'By {custom_wm}' as a clear, readable digital watermark on the bottom right corner."
+                    "instruction": "Strictly render the text 'By {custom_wm}' as a clear digital watermark."
                   }},
-                  "negative_prompt": "blurry text, messy layout, missing watermark, cartoonish"
+                  "negative_prompt": "cartoon, low resolution, messy layout, missing watermark"
                 }}
-                Content: Indonesian. Visual Descriptions: English.
                 """
                 
                 response = model.generate_content(instruksi)
@@ -123,13 +114,13 @@ try:
                 clean_json = response.text.replace("```json", "").replace("```", "").strip()
                 st.code(clean_json, language='json')
                 
-                st.info(f"✅ Langkah Selanjutnya: Salin kode di atas. Hasil akan menyertakan watermark: **By {custom_wm}**")
+                st.info(f"✅ Salin kode di atas. Hasil akan menyertakan watermark: **By {custom_wm}**")
                 st.balloons()
         else:
             st.warning("Silakan masukkan topik riset Anda.")
 
 except Exception as e:
-    st.error(f"Terjadi kendala teknis. Pastikan GEMINI_API_KEY sudah terpasang di Streamlit Secrets. Error: {e}")
+    st.error(f"Terjadi kendala teknis. Pastikan GEMINI_API_KEY sudah terpasang di Secrets. Error: {e}")
 
 st.markdown("---")
 st.caption("© 2026 Kreativ.ai | Solusi Konten Masa Depan")

@@ -1,93 +1,98 @@
 import streamlit as st
 import google.generativeai as genai
 
-# --- 1. BRANDING PRODUK ---
-st.set_page_config(page_title="Prompt Generator Infografis Pro", page_icon="🎨", layout="wide")
+# --- 1. UI PREMIUM & BRANDING ---
+st.set_page_config(page_title="Prompt Generator Infografis Pro", page_icon="🚀", layout="wide")
 
 st.markdown("""
     <style>
     .stApp { background-color: #0e1117; }
     .stButton>button { 
-        width: 100%; border-radius: 12px; height: 4em; 
+        width: 100%; border-radius: 12px; height: 3.5em; 
         background: linear-gradient(45deg, #FF4B4B, #FF8C00); 
-        color: white; border: none; font-weight: bold; font-size: 20px;
+        color: white; border: none; font-weight: bold; font-size: 18px;
     }
     #MainMenu {visibility: hidden;} footer {visibility: hidden;} header {visibility: hidden;}
     </style>
     """, unsafe_allow_html=True)
 
 # --- 2. AKSES KEAMANAN ---
-PWD_HEMAT = "HEMAT2026"
 PWD_PRO = "PROCUAN2026"
-
-# --- 3. LOGIN SYSTEM ---
-st.sidebar.markdown("### 🏛️ Member Portal")
 user_pwd = st.sidebar.text_input("Access Key", type="password", placeholder="Masukkan kunci akses...")
 
-is_member = user_pwd in [PWD_HEMAT, PWD_PRO]
-branding_name = "Kreativ.ai"
-
-# --- 4. DASHBOARD ---
-st.title("🚀 Prompt Generator Infografis Pro")
-st.markdown("#### *The Ultimate 8K High-Definition Infographic Engine*")
-st.markdown("---")
-
-if not is_member:
-    if user_pwd: st.sidebar.error("❌ Key Salah!")
-    st.info("🔓 **Sistem Terkunci.** Masukkan *Access Key* di sidebar untuk mulai.")
+if user_pwd != PWD_PRO:
+    if user_pwd: st.sidebar.error("❌ Kunci Akses Salah!")
+    st.info("🔓 Masukkan Access Key untuk mengaktifkan Mesin Visual 8K.")
     st.stop()
 
-# --- 5. MEMBER CONTROL ---
-if user_pwd == PWD_PRO:
-    st.success("💎 **Akses Premium Aktif**")
-    branding_name = st.text_input("Identity / Watermark Brand:", value="Kreativ.ai")
-else:
-    st.success("🌟 **Akses Standar Aktif**")
+# --- 3. DASHBOARD UTAMA ---
+st.title("🚀 Prompt Generator Infografis Pro")
+st.markdown("#### *Professional Editorial 3D Infographic Engine - 8K Ultra-HD*")
+st.markdown("---")
 
-# --- 6. CORE ENGINE (AUTOMATIC MODEL SCANNER) ---
+# --- 4. PANEL KONTROL (SUNTIKAN LOGIKA KOMPETITOR) ---
+col1, col2 = st.columns(2)
+with col1:
+    style_visual = st.selectbox("🎨 Pilih Gaya Visual (Mode Estetik):", [
+        "DIORAMA (Museum Exhibit Style)", "ISOMETRIC (Educational Editorial)", 
+        "PAPERCUT (Intricate Layered)", "CLAYMORPHIC (3D Clay Art)",
+        "HYPER-REALISTIC (Scientific Visualization)"
+    ])
+with col2:
+    branding_name = st.text_input("Identity / Watermark Brand:", value="Kreativ.ai")
+
+topik = st.text_area("Apa materi yang ingin dibuatkan infografisnya?", placeholder="Contoh: Anatomi Burung Hantu, Sistem Tata Surya, atau Cara Kerja Jantung...")
+
+# --- 5. CORE ENGINE (PENGUNCIAN MODEL & LOGIKA KOMPETITOR) ---
 try:
     API_KEY = st.secrets["GEMINI_API_KEY"]
     genai.configure(api_key=API_KEY)
     
-    # SCANNING MODEL YANG TERSEDIA DI AKUN ANDA (ANTI-404)
+    # Auto-detect model aktif (Flash 1.5 - Jatah 1.500/hari)
     models = [m.name for m in genai.list_models() if 'generateContent' in m.supported_generation_methods]
+    target_model = next((m for m in models if "1.5-flash" in m), models[0])
     
-    # Cari yang paling stabil (1.5 Flash), jika tidak ada pakai yang tersedia pertama kali
-    selected_model = next((m for m in models if "1.5-flash" in m), models[0] if models else None)
-
-    topik = st.text_input("Materi apa yang ingin Anda buat?", placeholder="Contoh: Anatomi Tokek, Daur Hidup Katak, dll.")
-
-    if st.button("Generate Master Prompt Sekarang ⚡"):
-        if topik and selected_model:
-            with st.spinner(f'Menggunakan {selected_model} untuk merancang visual...'):
+    if st.button("Generate Master Prompt ⚡"):
+        if topik:
+            with st.spinner(f'Merancang visual editorial gaya {style_visual}...'):
+                # SUNTIKAN INSTRUKSI "RESEP RAHASIA" KOMPETITOR
                 instruksi = f"""
-                Act as a Professional Senior Visual Strategist. Generate a complex 3D Infographic Master Prompt in JSON for: '{topik}'.
-                STRICT RULES:
-                1. CONCEPT: Isometric 'Diorama Box' with extreme depth.
-                2. INFOGRAPHIC: Include headline, subheadline, and 3-4 technical segments in Indonesian.
-                3. QUALITY: 8K, macro textures, museum diorama style.
-                4. ASPECT RATIO: Strictly '2:3'.
-                5. WATERMARK: Bold text 'By {branding_name}' at the BOTTOM CENTER.
-                Return ONLY JSON.
+                You are a Professional Senior Prompt Engineer specializing in editorial 3D infographic templates. 
+                Generate an intricate JSON-based master prompt for: '{topik}'.
+                
+                STRICT VISUAL RULES (ATM LOGIC):
+                1. STYLE: {style_visual}. Use Isometric perspective with extreme depth of field.
+                2. STRUCTURE: Headline, Subheadline (Indonesian), Main 3D Diorama, 3 Data Sections with icons, and Impact Section.
+                3. ICON LOGIC: Icons must be 3D models of the ACTUAL object (no abstract/vector icons).
+                4. RENDER: 8K resolution, volumetric lighting, photorealistic textures (resin, wood, or glass).
+                5. RATIO: Strictly 2:3.
+                6. WATERMARK: 'By {branding_name}' at Bottom Center.
+                
+                NEGATIVE PROMPT: No cartoon, no 2D, no flat vector, no English text for labels.
+                RETURN ONLY THE JSON BLOCK.
                 """
                 
-                model = genai.GenerativeModel(selected_model)
+                model = genai.GenerativeModel(target_model)
                 response = model.generate_content(instruksi)
                 
-                st.markdown("### 📊 Master Prompt JSON")
-                clean_json = response.text.replace("```json", "").replace("```", "").strip()
-                st.code(clean_json, language='json')
+                st.markdown("### 💎 Hasil Master Prompt (Kualitas Editorial 8K)")
+                st.code(response.text.replace("```json", "").replace("```", "").strip(), language='json')
                 
+                # --- 6. INSTRUKSI PENGGUNA SIMPEL ---
                 st.markdown("---")
                 st.markdown("### ✅ Cara Pakai (Sangat Mudah):")
-                st.markdown("1. **Salin Kode** di atas.\n2. **Tempel ke ChatGPT** (Sangat Disarankan).\n3. **Kirim** dan lihat hasilnya!")
+                st.markdown(f"""
+                1. **Klik Ikon Salin** pada kotak hitam di atas.
+                2. Buka **ChatGPT** (Gratis/Pro) atau Gemini.
+                3. **Tempel & Kirim.**
+                
+                *Note: ChatGPT lebih disarankan untuk penulisan teks yang lebih rapi.*
+                """)
                 st.balloons()
-        elif not selected_model:
-            st.error("⚠️ Tidak ada model AI yang ditemukan di akun ini. Cek API Key Anda.")
         else:
-            st.warning("Isi topik dulu ya.")
+            st.warning("Silakan masukkan topik materi terlebih dahulu.")
 except Exception as e:
-    st.error(f"Kendala teknis: {e}")
+    st.error(f"Sistem sedang sinkronisasi data: {e}")
 
 st.markdown("---")
-st.caption("© 2026 Kreativ.ai | Professional 8K Infographic Solution")
+st.caption("© 2026 Kreativ.ai | Professional 8K Visual Solution")

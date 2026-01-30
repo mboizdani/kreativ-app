@@ -6,41 +6,43 @@ st.set_page_config(page_title="Kreativ.ai - Prompt Builder", page_icon="🚀")
 st.title("🎨 Kreativ.ai Prompt Generator")
 st.write("Ubah topik apa saja menjadi prompt infografis profesional.")
 
-# API KEY Anda
+# API KEY Anda yang sudah aktif
 API_KEY = "AIzaSyA9cbVtTFvvpc_AUUsGA1VNCKcoIffiUKc"
 
-# Inisialisasi AI (Menggunakan versi yang paling stabil)
+# Inisialisasi AI
 genai.configure(api_key=API_KEY)
-model = genai.GenerativeModel('gemini-1.5-flash')
 
-topik = st.text_input("Apa topik infografis Anda?", placeholder="Contoh: Tips Sukses Jualan Online")
+topik = st.text_input("Apa topik infografis Anda?", placeholder="Contoh: Tips Sukses Trading Crypto")
 
 if st.button("Proses Sekarang ✨"):
     if topik:
         with st.spinner('Kreativ.ai sedang meriset data...'):
+            # Instruksi agar hasil prompt Spektakuler
+            instruksi = (
+                f"Riset topik '{topik}' secara mendalam. "
+                "Berikan Judul menarik, 5 poin materi utama, "
+                "dan buatkan satu Master Prompt bahasa Inggris yang sangat detail untuk "
+                "membuat gambar '3D Isometric Professional Infographic' dengan pencahayaan lembut."
+            )
+            
+            # LOGIKA BACKUP: Mencoba model Flash, jika gagal coba Pro
             try:
-                # Instruksi agar hasil prompt Spektakuler
-                instruksi = (
-                    f"Riset topik '{topik}' secara mendalam. "
-                    "Berikan Judul menarik, 5 poin materi utama, "
-                    "dan buatkan satu Master Prompt bahasa Inggris yang sangat detail untuk "
-                    "membuat gambar '3D Isometric Professional Infographic' dengan pencahayaan lembut."
-                )
-                
+                # Coba jalur 1: Model Flash
+                model = genai.GenerativeModel('gemini-1.5-flash')
                 response = model.generate_content(instruksi)
-                
                 st.markdown("### 📊 Hasil Riset & Prompt")
                 st.code(response.text)
                 st.info("Salin teks di atas ke Gemini untuk membuat gambar!")
-                
-            except Exception as e:
-                # Jika masih ada error, gunakan model alternatif secara otomatis
+            except Exception:
                 try:
-                    alt_model = genai.GenerativeModel('gemini-pro')
-                    response = alt_model.generate_content(instruksi)
+                    # Coba jalur 2: Model Pro (Lebih stabil untuk API versi lama)
+                    model_pro = genai.GenerativeModel('gemini-pro')
+                    response = model_pro.generate_content(instruksi)
+                    st.markdown("### 📊 Hasil Riset & Prompt")
                     st.code(response.text)
-                except:
-                    st.error(f"Maaf, ada kendala teknis pada server: {e}")
+                    st.info("Salin teks di atas ke Gemini untuk membuat gambar!")
+                except Exception as e:
+                    st.error(f"Maaf, server sedang sibuk. Silakan coba lagi beberapa saat. Error: {e}")
     else:
         st.warning("Silakan isi topiknya dulu ya.")
 

@@ -1,7 +1,7 @@
 import streamlit as st
 import google.generativeai as genai
 
-# --- 1. KONFIGURASI HALAMAN ---
+# --- 1. KONFIGURASI BRANDING ---
 st.set_page_config(page_title="Kreativ.ai Pro - Prompt Builder", page_icon="🚀")
 
 st.markdown("""
@@ -42,48 +42,41 @@ else:
     st.info("💡 Watermark otomatis: **Kreativ.ai**")
 
 # --- 5. KONFIGURASI API ---
+# Gunakan API Key baru yang belum bocor
 API_KEY = "AIzaSyDz8Uped3q9oGoN442MOHdfcIcco8KKpWw" 
 
 try:
     genai.configure(api_key=API_KEY)
-    
-    # Deteksi model otomatis
     available_models = [m.name for m in genai.list_models() if 'generateContent' in m.supported_generation_methods]
-    if available_models:
-        model = genai.GenerativeModel(available_models[0])
-    else:
-        st.error("API Key bermasalah atau model tidak ditemukan.")
-        st.stop()
+    model = genai.GenerativeModel(available_models[0])
 
-    topik = st.text_input("Apa topik infografis Anda?", placeholder="Contoh: Klasifikasi Hewan")
+    topik = st.text_input("Apa topik infografis Anda?", placeholder="Contoh: Ekosistem Laut")
 
     if st.button("Proses Sekarang ✨"):
         if topik:
             with st.spinner('Kreativ.ai sedang merancang visual modular...'):
-                # INSTRUKSI VERSI OPTIMASI TEKS & WATERMARK TETAP
+                # INSTRUKSI DIPERTANGGUH UNTUK MEMAKSA WATERMARK DI CHATGPT & GEMINI
                 instruksi = f"""
                 You are a Professional Prompt Engineer. Generate a Modular 3D Infographic JSON for: '{topik}'.
                 
                 STRICT JSON STRUCTURE (Return ONLY JSON):
                 {{
                   "headline_text": "JUDUL DALAM BAHASA INDONESIA",
-                  "main_topic": "detailed visual of {topik}",
+                  "main_topic": "highly detailed visual of {topik}",
                   "visual_type": "educational infographic poster",
                   "design_style": "editorial modular design",
-                  "main_visual_description": "A central 3D isometric scene showing {topik}. Use high-quality textures and studio lighting.",
-                  "supporting_visuals": "3 smaller 3D isometric floating modules below the main scene zooming in on specific details.",
-                  "callout_titles": ["Detail 1", "Detail 2", "Detail 3"],
-                  "render_quality": "ultra high resolution, clear readable text, no blurry parts",
-                  "ui_style": "flat vector UI elements with clean lines overlaying 3D models for readability",
-                  "branding": {{
-                    "watermark_text": "By {custom_wm}",
-                    "watermark_position": "Bottom Right corner, distinct from the artwork",
-                    "style": "Professional subtle typography"
+                  "main_visual_description": "A stunning central 3D isometric scene of {topik}. Ultra-realistic textures, 8K resolution, and studio lighting.",
+                  "supporting_visuals": "3 floating 3D modules below the main scene with clear educational callouts.",
+                  "render_quality": "Masterpiece quality, photorealistic, sharp focus on all text elements",
+                  "branding_requirement": {{
+                    "mandatory_watermark": "By {custom_wm}",
+                    "position": "Bottom Right corner",
+                    "instruction": "Strictly render the text 'By {custom_wm}' as a clear, readable digital watermark on the final image. Do not ignore this text."
                   }},
-                  "negative_prompt": "blurry text, small unreadable labels, messy layout, cartoon"
+                  "negative_prompt": "blurry text, messy layout, missing watermark, cartoonish"
                 }}
                 
-                Content must be in Indonesian. Visual descriptions in English.
+                Content: Indonesian. Visual Descriptions: English. Ensure the watermark text is included in the image generation process.
                 """
                 
                 response = model.generate_content(instruksi)
@@ -93,9 +86,9 @@ try:
                 st.code(clean_json, language='json')
                 
                 st.info("✅ Langkah Selanjutnya:")
-                st.write("1. Salin kode di atas.")
-                st.write("2. Tempel ke Gemini (Nano Banana) atau ChatGPT.")
-                st.write(f"3. Watermark **'By {custom_wm}'** akan berada di pojok bawah.")
+                st.write(f"1. Salin kode di atas. Hasil akan menyertakan watermark: **By {custom_wm}**")
+                st.write("2. Tempel ke ChatGPT (DALL-E 3) atau Gemini (Nano Banana).")
+                st.write("3. Jika di ChatGPT watermark belum muncul, ketik: 'Add the branding text from the JSON to the bottom right corner'.")
         else:
             st.warning("Isi topiknya dulu.")
 

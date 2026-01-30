@@ -1,7 +1,7 @@
 import streamlit as st
 import google.generativeai as genai
 
-# --- 1. UI PREMIUM & BRANDING ---
+# --- 1. BRANDING & UI ---
 st.set_page_config(page_title="Prompt Generator Infografis Pro", page_icon="🚀", layout="wide")
 
 st.markdown("""
@@ -18,81 +18,134 @@ st.markdown("""
 
 # --- 2. AKSES KEAMANAN ---
 PWD_PRO = "PROCUAN2026"
-user_pwd = st.sidebar.text_input("Access Key", type="password", placeholder="Masukkan kunci akses...")
+user_pwd = st.sidebar.text_input("Access Key", type="password")
 
 if user_pwd != PWD_PRO:
-    if user_pwd: st.sidebar.error("❌ Kunci Akses Salah!")
-    st.info("🔓 Masukkan Access Key untuk mengaktifkan Mesin Visual 8K.")
+    if user_pwd: st.sidebar.error("❌ Key Salah")
+    st.info("🔓 Masukkan Access Key Premium")
     st.stop()
 
-# --- 3. DASHBOARD UTAMA ---
+# --- 3. DASHBOARD ---
 st.title("🚀 Prompt Generator Infografis Pro")
-st.markdown("#### *Professional Editorial 3D Infographic Engine - 8K Ultra-HD*")
-st.markdown("---")
+st.markdown("#### *The Ultimate Editorial 3D Engine (Competitor Level)*")
 
-# --- 4. PANEL KONTROL (SUNTIKAN LOGIKA KOMPETITOR) ---
+# --- 4. INPUT ---
 col1, col2 = st.columns(2)
 with col1:
-    style_visual = st.selectbox("🎨 Pilih Gaya Visual (Mode Estetik):", [
-        "DIORAMA (Museum Exhibit Style)", "ISOMETRIC (Educational Editorial)", 
-        "PAPERCUT (Intricate Layered)", "CLAYMORPHIC (3D Clay Art)",
-        "HYPER-REALISTIC (Scientific Visualization)"
-    ])
+    style_visual = st.selectbox("🎨 Gaya Visual:", ["DIORAMA (Best)", "ISOMETRIC", "PAPERCUT", "CLAYMORPHIC", "HYPER-REALISTIC"])
 with col2:
-    branding_name = st.text_input("Identity / Watermark Brand:", value="Kreativ.ai")
+    branding_name = st.text_input("Brand/Watermark:", value="Kreativ.ai")
 
-topik = st.text_area("Apa materi yang ingin dibuatkan infografisnya?", placeholder="Contoh: Anatomi Burung Hantu, Sistem Tata Surya, atau Cara Kerja Jantung...")
+topik = st.text_area("Topik Materi:", placeholder="Contoh: Daur Hidup Kupu-Kupu, Tata Surya, Struktur Jantung...")
 
-# --- 5. CORE ENGINE (PENGUNCIAN MODEL & LOGIKA KOMPETITOR) ---
+# --- 5. CORE ENGINE (CLONING STRUKTUR KOMPETITOR) ---
 try:
     API_KEY = st.secrets["GEMINI_API_KEY"]
     genai.configure(api_key=API_KEY)
     
-    # Auto-detect model aktif (Flash 1.5 - Jatah 1.500/hari)
+    # Auto-Scanner Model (Anti-404)
     models = [m.name for m in genai.list_models() if 'generateContent' in m.supported_generation_methods]
     target_model = next((m for m in models if "1.5-flash" in m), models[0])
-    
+
     if st.button("Generate Master Prompt ⚡"):
         if topik:
-            with st.spinner(f'Merancang visual editorial gaya {style_visual}...'):
-                # SUNTIKAN INSTRUKSI "RESEP RAHASIA" KOMPETITOR
+            with st.spinner('Menerapkan logika visual tingkat tinggi...'):
+                # INI KUNCINYA: TEMPLATE JSON PERSIS PUNYA KOMPETITOR
                 instruksi = f"""
-                You are a Professional Senior Prompt Engineer specializing in editorial 3D infographic templates. 
-                Generate an intricate JSON-based master prompt for: '{topik}'.
+                Act as a Professional Prompt Engineer. Generate a JSON output for: '{topik}' using style '{style_visual}'.
                 
-                STRICT VISUAL RULES (ATM LOGIC):
-                1. STYLE: {style_visual}. Use Isometric perspective with extreme depth of field.
-                2. STRUCTURE: Headline, Subheadline (Indonesian), Main 3D Diorama, 3 Data Sections with icons, and Impact Section.
-                3. ICON LOGIC: Icons must be 3D models of the ACTUAL object (no abstract/vector icons).
-                4. RENDER: 8K resolution, volumetric lighting, photorealistic textures (resin, wood, or glass).
-                5. RATIO: Strictly 2:3.
-                6. WATERMARK: 'By {branding_name}' at Bottom Center.
+                YOU MUST FOLLOW THIS EXACT JSON STRUCTURE (Do not change keys):
                 
-                NEGATIVE PROMPT: No cartoon, no 2D, no flat vector, no English text for labels.
-                RETURN ONLY THE JSON BLOCK.
+                {{
+                  "role": "professional_prompt_engineer",
+                  "project_type": "editorial_3D_infographic_template",
+                  "reusable": true,
+                  "output_settings": {{
+                    "output_format": "high-resolution vertical infographic poster",
+                    "aspect_ratio": "2:3",
+                    "resolution": "8K",
+                    "language": "Indonesian"
+                  }},
+                  "headline_section": {{
+                    "headline_text": "JUDUL KAPITAL",
+                    "headline_style": {{ "font": "3D EMBOSSED bold typography", "color": "HEX", "position": "top" }},
+                    "subheadline_text": "Penjelasan singkat",
+                    "subheadline_style": {{ "font": "Modern clean sans-serif", "color": "HEX" }}
+                  }},
+                  "main_visual_section": {{
+                    "visual_concept": "Nama Konsep Visual",
+                    "visual_description": "Deskripsi sangat detail tentang scene utama diorama 3D...",
+                    "visual_style": ["ultra-realistic 3D", "cinematic editorial", "educational"],
+                    "camera": {{ "angle": "isometric floating perspective", "depth_of_field": "high" }}
+                  }},
+                  "color_palette": {{ "primary": "HEX", "secondary": "HEX", "accent": "HEX", "background": "HEX" }},
+                  "data_visualization_sections": [
+                    {{
+                      "section_title": "JUDUL BAGIAN 1",
+                      "section_purpose": "Tujuan bagian ini",
+                      "visual_style_rule": "Icon must visually represent the exact object being explained. No abstract icons.",
+                      "visual_type": "icon-based 3D explanation",
+                      "content_points": [
+                        {{ "title": "Poin 1", "description": "Isi", "icon_description": "3D icon description..." }},
+                        {{ "title": "Poin 2", "description": "Isi", "icon_description": "3D icon description..." }}
+                      ]
+                    }},
+                    {{
+                      "section_title": "JUDUL BAGIAN 2 (PROSES)",
+                      "section_purpose": "Menjelaskan proses",
+                      "visual_style_rule": "Use visual highlighting only if topic involves movement. Flow arrows appear ONLY when real process exists.",
+                      "visual_type": "3D process highlight",
+                      "map_region": "Lokasi di visual utama",
+                      "content_points": [
+                         {{ "process_name": "Nama Proses", "process_description": "Deskripsi" }}
+                      ]
+                    }}
+                  ],
+                  "impact_section": {{
+                    "section_title": "FAKTA & DAMPAK",
+                    "layout": "three-column visual cards",
+                    "impacts": [
+                      {{ "impact_title": "Judul", "visual_description": "Miniature 3D scene...", "impact_text": "Isi teks" }}
+                    ]
+                  }},
+                  "design_details": {{
+                    "render_quality": "ultra-detailed, 8K render",
+                    "texture": "detail tekstur material...",
+                    "shadow": "soft ambient occlusion",
+                    "depth": "layered composition"
+                  }},
+                  "background_design": {{ "background_type": "Soft gradient...", "decorative_elements": "subtle patterns..." }},
+                  "branding_footer": {{
+                    "credit_text": "Sumber Data | Infografis 2026",
+                    "disclaimer": "Visualisasi artistik edukasi"
+                  }},
+                  "ai_model_recommendation": ["Midjourney v6", "DALL-E 3"],
+                  "negative_prompt": ["cartoon", "flat", "low res", "blurry", "bad anatomy", "text glitch", "hex codes"],
+                  "strict_visual_policy": {{
+                    "visible_text_policy": "design_text_only",
+                    "forbidden_text": ["hex color codes", "rgb values", "icon references"],
+                    "violation_handling": "remove all forbidden text from visual output"
+                  }}
+                }}
+                
+                IMPORTANT:
+                - Use Indonesian for all Content text.
+                - Use English for all Visual Descriptions.
+                - Watermark text: 'By {branding_name}'.
+                - Ensure the 'visual_style_rule' logic is applied exactly like the example structure.
                 """
                 
                 model = genai.GenerativeModel(target_model)
                 response = model.generate_content(instruksi)
                 
-                st.markdown("### 💎 Hasil Master Prompt (Kualitas Editorial 8K)")
+                st.markdown("### 💎 Master Prompt (Struktur Kompetitor)")
                 st.code(response.text.replace("```json", "").replace("```", "").strip(), language='json')
                 
-                # --- 6. INSTRUKSI PENGGUNA SIMPEL ---
                 st.markdown("---")
-                st.markdown("### ✅ Cara Pakai (Sangat Mudah):")
-                st.markdown(f"""
-                1. **Klik Ikon Salin** pada kotak hitam di atas.
-                2. Buka **ChatGPT** (Gratis/Pro) atau Gemini.
-                3. **Tempel & Kirim.**
-                
-                *Note: ChatGPT lebih disarankan untuk penulisan teks yang lebih rapi.*
-                """)
+                st.markdown("### ✅ Cara Pakai:")
+                st.markdown("1. Salin kode di atas.\n2. Tempel ke **ChatGPT**.\n3. Hasilnya akan **sama persis** strukturnya dengan tools kompetitor.")
                 st.balloons()
         else:
-            st.warning("Silakan masukkan topik materi terlebih dahulu.")
+            st.warning("Isi topik dulu ya.")
 except Exception as e:
-    st.error(f"Sistem sedang sinkronisasi data: {e}")
-
-st.markdown("---")
-st.caption("© 2026 Kreativ.ai | Professional 8K Visual Solution")
+    st.error(f"Sistem sedang sinkronisasi: {e}")

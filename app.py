@@ -1,5 +1,6 @@
 import streamlit as st
 import google.generativeai as genai
+import json
 
 # --- 1. SETUP VISUAL ---
 st.set_page_config(page_title="Prompt Generator Infografis Pro", page_icon="💎", layout="wide")
@@ -21,123 +22,131 @@ if user_pwd != PWD_PRO:
     st.info("🔒 Masukkan Access Key Premium")
     st.stop()
 
-# --- 3. GOLDEN SAMPLE (RAHASIA KOMPETITOR: SAMBAL MATAH) ---
-# Ini adalah "DNA" yang kita curi. AI akan dipaksa meniru struktur ini.
-GOLDEN_SAMPLE = """
-{
-  "project_type": "editorial_3D_infographic_template",
-  "output_settings": { "aspect_ratio": "2:3", "resolution": "8K", "language": "Indonesian" },
-  "headline_section": {
-    "headline_text": "JUDUL TOPIK (CAPS): SUB-JUDUL MENARIK",
-    "headline_style": { "font": "3D EMBOSSED bold typography", "color": "#HEX", "position": "top" },
-    "subheadline_text": "Penjelasan singkat yang memikat."
-  },
-  "main_visual_section": {
-    "visual_concept": "Nama Konsep Visual",
-    "visual_description": "ENGLISH: An intricate isometric 3D diorama of... [Describe the main scene in extreme detail, mentioning textures, lighting, and composition]. The scene is well-lit, emphasizing vibrant colors.",
-    "visual_style": ["ultra-realistic 3D", "cinematic editorial", "educational"],
-    "camera": { "angle": "isometric floating perspective", "depth_of_field": "high" }
-  },
-  "data_visualization_sections": [
-    {
-      "section_title": "JUDUL BAGIAN 1 (KOMPONEN/BAHAN)",
-      "visual_style_rule": "Icon must visually represent the exact object being explained. No abstract icons.",
-      "visual_type": "icon-based 3D explanation",
-      "content_points": [
-        { 
-          "title": "Nama Poin", 
-          "description": "INDONESIA: Penjelasan detail...", 
-          "icon_description": "ENGLISH: A photorealistic 3D icon of [Object], rendered in [Material], matching real-world form." 
-        }
-      ]
-    },
-    {
-      "section_title": "JUDUL BAGIAN 2 (PROSES/LANGKAH)",
-      "visual_style_rule": "Use visual highlighting only if topic involves movement.",
-      "visual_type": "3D process highlight",
-      "content_points": [
-        { "process_name": "Langkah 1", "process_description": "INDONESIA: Penjelasan langkah..." }
-      ]
-    }
-  ],
-  "impact_section": {
-    "section_title": "FAKTA & DAMPAK",
-    "layout": "three-column visual cards",
-    "impacts": [
-      { 
-        "impact_title": "Judul Dampak", 
-        "visual_description": "ENGLISH: A miniature 3D scene of...", 
-        "impact_text": "INDONESIA: Penjelasan dampak..." 
-      }
-    ]
-  },
-  "design_details": {
-    "render_quality": "ultra-detailed, 8K render",
-    "texture": "ENGLISH: [List specific textures: wood, glass, resin, metal, etc.]",
-    "shadow": "soft ambient occlusion with subtle directional light",
-    "depth": "layered composition with clear foreground and background"
-  },
-  "strict_visual_policy": {
-    "forbidden_text": ["hex color codes", "rgb values", "icon references", "debug labels"]
-  }
-}
-"""
+# --- 3. HARD-CODED TEMPLATE (BAGIAN INI 100% MIRIP KOMPETITOR) ---
+# Kita tidak minta AI bikin ini. Kita tempel paksa biar kualitasnya terkunci.
+def get_template_structure(topik, style):
+    return f"""
+    {{
+      "role": "professional_prompt_engineer",
+      "project_type": "editorial_3D_infographic_template",
+      "reusable": true,
+      "output_settings": {{
+        "output_format": "high-resolution vertical infographic poster",
+        "aspect_ratio": "2:3",
+        "resolution": "8K",
+        "language": "Indonesian"
+      }},
+      "headline_section": {{
+        "headline_text": "JUDUL TOPIK (CAPS): SUB-JUDUL MENARIK",
+        "headline_style": {{
+          "font": "3D EMBOSSED bold typography with relatable style to topic",
+          "font_weight": "extra bold",
+          "color": "#HEX",
+          "alignment": "center",
+          "position": "top"
+        }},
+        "subheadline_text": "Penjelasan singkat yang memikat tentang {topik}.",
+        "subheadline_style": {{ "font": "3D EMBOS modern clean sans-serif", "color": "#HEX" }}
+      }},
+      "main_visual_section": {{
+        "visual_concept": "The {topik} Diorama Concept",
+        "visual_description": "ENGLISH DESCRIPTION: A comprehensive, dynamic isometric view of {topik}. The scene shows [DETAIL 1], [DETAIL 2], and [DETAIL 3]. Glowing translucent arrows clearly indicate the flow or process. The scene is well-lit, emphasizing textures, refractions, and volumetric elements.",
+        "visual_style": [
+          "ultra-realistic 3D",
+          "cinematic editorial illustration",
+          "educational scientific visualization",
+          "magical environmental storytelling"
+        ],
+        "camera": {{
+          "angle": "isometric floating perspective covering a large systemic cross-section",
+          "depth_of_field": "high, focusing on the entire interconnected loop/system",
+          "lighting": "bright, radiant studio lighting enhancing textures"
+        }}
+      }},
+      "data_visualization_sections": [
+        {{
+          "section_title": "BAGIAN 1 (KOMPONEN UTAMA)",
+          "section_purpose": "Menjelaskan komponen utama.",
+          "visual_style_rule": "Icon must visually represent the exact object being explained. No abstract icons.",
+          "visual_type": "icon-based 3D explanation",
+          "content_points": [
+            {{ "title": "Poin 1", "description": "Penjelasan...", "icon_description": "3D icon accurately shaped like [Object]..." }}
+          ]
+        }}
+      ],
+      "impact_section": {{
+        "section_title": "FAKTA & DAMPAK",
+        "layout": "three-column visual cards",
+        "impacts": [
+          {{ "impact_title": "Judul", "visual_description": "A miniature 3D scene of...", "impact_text": "Teks dampak..." }}
+        ]
+      }},
+      "design_details": {{
+        "render_quality": "ultra-detailed, 8K render, photorealistic textures",
+        "texture": "shimmering surfaces, volumetric mist, translucent layers, highly detailed textures",
+        "shadow": "soft ambient occlusion with realistic caustics",
+        "depth": "layered composition with floating data particles"
+      }},
+      "strict_visual_policy": {{
+        "visible_text_policy": "design_text_only",
+        "forbidden_text": ["hex color codes", "rgb values", "icon references", "debug labels"],
+        "violation_handling": "remove all forbidden text from visual output"
+      }}
+    }}
+    """
 
-# --- 4. DASHBOARD & ENGINE ---
+# --- 4. DASHBOARD ---
 st.title("💎 Prompt Generator Infografis Pro")
-st.caption("Engine: Gemini 1.5 Pro (Structure Cloning Mode)")
+st.caption("Mode: Strict Template Filling (Kompetitor Clone)")
 
 col1, col2 = st.columns(2)
 with col1:
-    style_visual = st.selectbox("🎨 Gaya Visual:", ["DIORAMA", "ISOMETRIC", "PAPERCUT", "CLAYMORPHIC", "HYPER-REALISTIC"])
+    style_visual = st.selectbox("🎨 Gaya Visual:", ["DIORAMA (Wajib)", "ISOMETRIC", "PAPERCUT"])
 with col2:
     branding_name = st.text_input("Brand/Watermark:", value="Kreativ.ai")
 
-topik = st.text_area("Topik Materi:", placeholder="Contoh: Daur Hidup Kupu-Kupu, Cara Kerja Mesin Diesel, Resep Nasi Goreng...")
+topik = st.text_area("Topik Materi:", placeholder="Contoh: Daur Hidup Kupu-Kupu...")
 
-# --- CORE LOGIC ---
+# --- CORE ENGINE ---
 try:
     API_KEY = st.secrets["GEMINI_API_KEY"]
     genai.configure(api_key=API_KEY)
     
-    # Auto-detect (Cari Pro dulu, baru Flash)
     models = [m.name for m in genai.list_models() if 'generateContent' in m.supported_generation_methods]
     target_model = next((m for m in models if "1.5-pro" in m), next((m for m in models if "1.5-flash" in m), models[0]))
 
     if st.button("GENERATE PROMPT 🚀"):
         if topik:
-            with st.spinner('Sedang menduplikasi struktur kompetitor...'):
-                # PROMPT SAKTI: ONE-SHOT CLONING
+            with st.spinner('Mengisi template editorial...'):
+                # KITA MINTA AI HANYA MENGISI BAGIAN KOSONG DARI TEMPLATE DI ATAS
+                template_str = get_template_structure(topik, style_visual)
+                
                 instruksi = f"""
                 Act as a World-Class Prompt Engineer.
                 
-                OBJECTIVE: Create a high-end JSON Prompt for the topic: '{topik}'.
-                STYLE: {style_visual}.
+                TASK: Fill in the content for the JSON Template below based on the topic: '{topik}'.
                 
-                REFERENCE: Use the provided "GOLDEN SAMPLE" JSON below as the strict template.
+                RULES:
+                1. KEEP the exact structure, keys, and fixed values (like 'visual_style', 'camera', 'design_details') EXACTLY as provided in the template. DO NOT CHANGE THEM.
+                2. Only generate new content for: 'headline_text', 'subheadline_text', 'visual_description', 'data_visualization_sections', and 'impact_section'.
+                3. Content Language: Indonesian.
+                4. Visual Description Language: English (High-end, cinematic vocabulary).
+                5. Watermark: 'By {branding_name}'.
                 
-                INSTRUCTIONS:
-                1. STRUCTURE: You MUST follow the exact keys and nesting of the GOLDEN SAMPLE.
-                2. LANGUAGE: Content MUST be Indonesian. Visual Descriptions MUST be English.
-                3. DEPTH: Mimic the richness of the descriptions (e.g., mention textures, lighting, materials).
-                4. LOGIC: Apply the rule "Icon must visually represent the exact object".
-                5. BRANDING: Watermark 'By {branding_name}' at Bottom Center.
+                TEMPLATE TO FILL:
+                {template_str}
                 
-                GOLDEN SAMPLE (DO NOT COPY CONTENT, ONLY STRUCTURE):
-                {GOLDEN_SAMPLE}
-                
-                OUTPUT: JSON ONLY for '{topik}'.
+                OUTPUT: COMPLETE FILLED JSON ONLY.
                 """
                 
                 model = genai.GenerativeModel(target_model)
                 response = model.generate_content(instruksi)
                 
-                st.markdown("### ✅ Hasil Prompt (Kualitas Kompetitor)")
+                st.markdown("### ✅ Hasil Prompt (Fixed Structure)")
                 st.code(response.text.replace("```json", "").replace("```", "").strip(), language='json')
-                st.success("Selesai! Struktur ini 100% mengikuti logika 'Tools 2' kompetitor.")
+                st.success("Bagian style & teknis visual sekarang 100% sama dengan kompetitor.")
         else:
             st.warning("Isi topiknya dulu bosku.")
 
 except Exception as e:
     st.error(f"Error Teknis: {e}")
-    
